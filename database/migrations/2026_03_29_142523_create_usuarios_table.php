@@ -13,7 +13,17 @@ return new class extends Migration
     {
         Schema::create('usuarios', function (Blueprint $table) {
             $table->id();
+            $table->enum('rol', ['administrador', 'gerente', 'encargado'])->default('encargado');
+            $table->integer('dni')->unique();
+            $table->string('nombre');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->boolean('password_cambiado')->default(false);
+            $table->boolean('autorizado_financiero')->default(false);
+            $table->boolean('estado')->default(true);
+            $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
