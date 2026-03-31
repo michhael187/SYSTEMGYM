@@ -56,4 +56,15 @@ class User extends Authenticatable
             'deleted_at' => 'datetime',
         ];
     }
+
+    public function pagos()
+    {
+        return $this->hasMany(Pago::class, 'usuario_id');
+    }
+
+    public function historialOperaciones()
+    {
+        return $this->hasMany(HistorialOperacion::class, 'usuario_id');
+    }
+
 }
