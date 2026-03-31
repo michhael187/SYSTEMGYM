@@ -10,6 +10,7 @@ class Cliente extends Model
 {
     use HasFactory, SoftDeletes;
 
+    // Datos base del personal que usa el sistema.
     protected $fillable = [
         'dni',
         'nombre',
@@ -35,12 +36,12 @@ class Cliente extends Model
             'deleted_at' => 'datetime',
         ];
     }
-
+    // Estado actual del cliente para consulta operativa diaria.
     public function membresiaActual()
     {
         return $this->belongsTo(Membresia::class, 'membresia_actual_id');
     }
-
+    // Historial de pagos del cliente. No representa el estado actual, sino cada transaccion registrada.
     public function pagos()
     {
         return $this->hasMany(Pago::class);
