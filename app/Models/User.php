@@ -24,6 +24,7 @@ class User extends Authenticatable
         'rol',
         'dni',
         'nombre',
+        'apellido',
         'email',
         'password',
         'password_cambiado',

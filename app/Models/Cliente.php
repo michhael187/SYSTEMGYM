@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Cliente extends Model
 {
     use HasFactory, SoftDeletes;
-
     // Datos base del personal que usa el sistema.
     protected $fillable = [
         'dni',
