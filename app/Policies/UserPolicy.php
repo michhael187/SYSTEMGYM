@@ -13,4 +13,12 @@ class UserPolicy
     {
         return $user->rol === 'administrador';
     }
+
+    /**
+     * Solo un administrador puede modificar o reactivar usuarios.
+     */
+    public function update(User $user): bool
+    {
+        return $user->rol === 'administrador';
+    }
 }

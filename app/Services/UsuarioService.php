@@ -33,4 +33,39 @@ class UsuarioService
     {
         return $rol === 'gerente';
     }
+
+    /**
+     * Reactiva un usuario existente a partir de su DNI.
+     */
+    public function reactivarUsuario(array $datos): array
+    {
+        $usuario = User::where('dni', $datos['dni'])->first();
+
+        if (! $usuario) {
+            return [
+                'accion' => 'no_encontrado',
+                'usuario' => null,
+            ];
+        }
+
+        if ($usuario->estado) {
+            return [
+                'accion' => 'ya_activo',
+                'usuario' => $usuario,
+            ];
+        }
+
+        $usuario->update([
+            'password' => $datos['password'],
+            'password_cambiado' => false,
+            'autorizado_financiero' => $this->determinarAutorizacionFinanciera($usuario->rol),
+            'estado' => true,
+        ]);
+
+        return [
+            'accion' => 'reactivado',
+            'usuario' => $usuario->fresh(),
+        ];
+    }
+
 }

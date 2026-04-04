@@ -23,6 +23,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/usuarios', [UsuarioController::class, 'store'])
         ->name('usuarios.store');
 
+    Route::get('/usuarios/reactivar', [UsuarioController::class, 'showReactivarForm'])
+        ->name('usuarios.reactivar.form');
+
+    Route::post('/usuarios/reactivar', [UsuarioController::class, 'reactivar'])
+        ->name('usuarios.reactivar');
+
+
 });
 
 require __DIR__.'/auth.php';
