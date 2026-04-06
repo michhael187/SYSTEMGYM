@@ -29,6 +29,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/usuarios/reactivar', [UsuarioController::class, 'reactivar'])
         ->name('usuarios.reactivar');
 
+    Route::get('/usuarios/{usuario}/editar', [UsuarioController::class, 'edit'])
+        ->name('usuarios.edit');
+
+    Route::put('/usuarios/{usuario}', [UsuarioController::class, 'update'])
+        ->name('usuarios.update');
 
 });
 

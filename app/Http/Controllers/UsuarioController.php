@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\ReactivateUserRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
@@ -69,6 +70,30 @@ class UsuarioController extends Controller
                 ->route('usuarios.reactivar.form')
                 ->with('warning', 'No se encontro un usuario con ese DNI.'),
         };
+    }
+
+     /**
+     * Muestra el formulario de edicion de un usuario.
+     */
+    public function edit(User $usuario)
+    {
+        $this->authorize('update', User::class);
+
+        return view('usuarios.edit', compact('usuario'));
+    }
+
+    /**
+     * Procesa la modificacion de un usuario existente.
+     */
+    public function update(UpdateUserRequest $request, User $usuario)
+    {
+        $this->authorize('update', User::class);
+
+        $this->usuarioService->actualizarUsuario($usuario, $request->validated());
+
+        return redirect()
+            ->route('usuarios.edit', $usuario)
+            ->with('success', 'Usuario actualizado correctamente.');
     }
 
 }

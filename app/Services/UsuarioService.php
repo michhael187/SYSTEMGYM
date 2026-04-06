@@ -68,4 +68,21 @@ class UsuarioService
         ];
     }
 
+    /**
+     * Actualiza los datos editables de un usuario existente.
+     */
+    public function actualizarUsuario(User $usuario, array $datos): User
+    {
+        $usuario->update([
+            'rol' => $datos['rol'],
+            'nombre' => $datos['nombre'],
+            'apellido' => $datos['apellido'],
+            'email' => $datos['email'],
+            'autorizado_financiero' => $this->determinarAutorizacionFinanciera($datos['rol']),
+            'estado' => $datos['estado'],
+        ]);
+
+        return $usuario->fresh();
+    }
+
 }
