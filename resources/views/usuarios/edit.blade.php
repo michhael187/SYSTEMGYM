@@ -95,6 +95,24 @@
                         </button>
                     </div>
                 </form>
+
+                <hr class="my-6">
+
+                <div>
+                    <h3 class="mb-3 text-lg font-semibold text-gray-800">Baja lógica del usuario</h3>
+                    <p class="mb-4 text-sm text-gray-600">
+                        Esta acción cambia el estado del usuario a inactivo, pero no elimina su registro del sistema.
+                    </p>
+
+                    <form action="{{ route('usuarios.baja', $usuario) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+
+                        <button type="submit" style="background:#b91c1c; color:white; padding:10px 16px; border-radius:6px;">
+                            Dar de Baja Usuario
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

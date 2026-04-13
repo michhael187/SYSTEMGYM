@@ -35,6 +35,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/usuarios/{usuario}', [UsuarioController::class, 'update'])
         ->name('usuarios.update');
 
+    Route::patch('/usuarios/{usuario}/baja', [UsuarioController::class, 'darDeBaja'])
+        ->name('usuarios.baja');
+
 });
 
 require __DIR__.'/auth.php';

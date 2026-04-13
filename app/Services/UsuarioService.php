@@ -85,4 +85,16 @@ class UsuarioService
         return $usuario->fresh();
     }
 
+    /**
+     * Realiza la baja logica de un usuario existente.
+     */
+    public function darDeBajaUsuario(User $usuario): User
+    {
+        $usuario->update([
+            'estado' => false,
+        ]);
+
+        return $usuario->fresh();
+    }
+
 }

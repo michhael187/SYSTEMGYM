@@ -96,4 +96,19 @@ class UsuarioController extends Controller
             ->with('success', 'Usuario actualizado correctamente.');
     }
 
+
+        /**
+     * Realiza la baja logica de un usuario.
+     */
+    public function darDeBaja(User $usuario)
+    {
+        $this->authorize('update', User::class);
+
+        $this->usuarioService->darDeBajaUsuario($usuario);
+
+        return redirect()
+            ->route('usuarios.edit', $usuario)
+            ->with('success', 'Usuario dado de baja correctamente.');
+    }
+
 }
