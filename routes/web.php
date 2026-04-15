@@ -38,7 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/usuarios/{usuario}/baja', [UsuarioController::class, 'darDeBaja'])
         ->name('usuarios.baja');
     
-        Route::get('/clientes/buscar', [ClienteController::class, 'buscarForm'])
+    Route::get('/clientes/buscar', [ClienteController::class, 'buscarForm'])
         ->name('clientes.buscar.form');
 
     Route::post('/clientes/buscar', [ClienteController::class, 'buscar'])
@@ -49,6 +49,12 @@ Route::middleware('auth')->group(function () {
 
     Route::put('/clientes/{cliente}', [ClienteController::class, 'update'])
         ->name('clientes.update');
+
+    Route::get('/clientes/crear', [ClienteController::class, 'create'])
+        ->name('clientes.create');
+
+    Route::post('/clientes', [ClienteController::class, 'store'])
+        ->name('clientes.store');
 
 });
 

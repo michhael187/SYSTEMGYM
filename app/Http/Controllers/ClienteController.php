@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Membresia;
+use App\Http\Requests\StoreClienteRequest;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
 use App\Services\ClienteService;
@@ -22,9 +23,31 @@ class ClienteController extends Controller
     }
 
     /**
-     * Busca un cliente por DNI y redirige a su vista de edicion.
+     * Muestra el formulario de alta de cliente.
      */
-        /**
+    public function create()
+    {
+        $membresias = Membresia::where('activo', true)
+            ->orderBy('nombre_plan')
+            ->get();
+
+        return view('clientes.create', compact('membresias'));
+    }
+
+    /**
+     * Procesa el alta de un nuevo cliente.
+     */
+    public function store(StoreClienteRequest $request)
+    {
+        $cliente = $this->clienteService->crearCliente($request->validated());
+
+        return redirect()
+            ->route('clientes.edit', $cliente)
+            ->with('success', 'Cliente registrado correctamente.');
+    }
+
+
+    /**
      * Busca un cliente por DNI o apellido.
      */
     public function buscar(Request $request)
