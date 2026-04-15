@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +37,24 @@ Route::middleware('auth')->group(function () {
 
     Route::patch('/usuarios/{usuario}/baja', [UsuarioController::class, 'darDeBaja'])
         ->name('usuarios.baja');
+    
+    Route::get('/clientes/buscar', [ClienteController::class, 'buscarForm'])
+        ->name('clientes.buscar.form');
+
+    Route::post('/clientes/buscar', [ClienteController::class, 'buscar'])
+        ->name('clientes.buscar');
+
+    Route::get('/clientes/{cliente}/editar', [ClienteController::class, 'edit'])
+        ->name('clientes.edit');
+
+    Route::put('/clientes/{cliente}', [ClienteController::class, 'update'])
+        ->name('clientes.update');
+
+    Route::get('/clientes/crear', [ClienteController::class, 'create'])
+        ->name('clientes.create');
+
+    Route::post('/clientes', [ClienteController::class, 'store'])
+        ->name('clientes.store');
 
 });
 
