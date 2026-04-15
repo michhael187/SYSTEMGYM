@@ -94,17 +94,6 @@
                     </div>
 
                     <div>
-                        <label for="fecha_vencimiento" class="block text-sm font-medium text-gray-700">Fecha vencimiento</label>
-                        <input
-                            type="date"
-                            name="fecha_vencimiento"
-                            id="fecha_vencimiento"
-                            value="{{ old('fecha_vencimiento') }}"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                        >
-                    </div>
-
-                    <div>
                         <label for="peso" class="block text-sm font-medium text-gray-700">Peso</label>
                         <input
                             type="number"
