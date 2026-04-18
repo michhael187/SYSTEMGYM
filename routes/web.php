@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ProfileController;
@@ -55,6 +56,12 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/clientes', [ClienteController::class, 'store'])
         ->name('clientes.store');
+    
+        Route::get('/pagos/crear', [PagoController::class, 'create'])
+        ->name('pagos.create');
+
+    Route::post('/pagos', [PagoController::class, 'store'])
+        ->name('pagos.store');
 
 });
 
