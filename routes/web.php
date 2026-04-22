@@ -87,6 +87,10 @@ Route::middleware('auth')->group(function () {
         ->name('informes.financiero');
     Route::get('/informes/financiero/descargar', [InformeController::class, 'descargarFinanciero'])
         ->name('informes.financiero.descargar');
+    Route::get('/informes/clientes-vigentes', [InformeController::class, 'clientesVigentes'])
+        ->name('informes.clientes_vigentes');
+    Route::get('/informes/clientes-vigentes/descargar', [InformeController::class, 'descargarClientesVigentes'])
+        ->name('informes.clientes_vigentes.descargar');
 });
 
 require __DIR__.'/auth.php';

@@ -47,4 +47,34 @@ class InformeController extends Controller
             ->setPaper('a4')
             ->download($nombreArchivo);
     }
+
+    /**
+     * Muestra el informe de clientes vigentes con estado activo.
+     */
+    public function clientesVigentes(): View
+    {
+        $this->authorize('viewActiveClientsReport');
+
+        $informe = $this->informeService->generarInformeClientesVigentes();
+
+        return view('informes.clientes_vigentes', $informe);
+    }
+
+    /**
+     * Descarga una version PDF del informe de clientes vigentes.
+     */
+    public function descargarClientesVigentes(): Response
+    {
+        $this->authorize('viewActiveClientsReport');
+
+        $informe = $this->informeService->generarInformeClientesVigentes();
+        $nombreArchivo = sprintf(
+            'informe_clientes_vigentes_%s.pdf',
+            $informe['fecha_referencia']->format('Ymd')
+        );
+
+        return Pdf::loadView('informes.clientes_vigentes_pdf', $informe)
+            ->setPaper('a4')
+            ->download($nombreArchivo);
+    }
 }

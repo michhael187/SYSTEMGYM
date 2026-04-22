@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Cliente;
 use App\Models\Pago;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -70,6 +71,44 @@ class InformeService
             'total_recaudado' => $totalRecaudado,
             'cantidad_pagos' => $cantidadPagos,
             'promedio_por_pago' => $promedioPorPago,
+            'resumen_por_membresia' => $resumenPorMembresia,
+        ];
+    }
+
+    /**
+     * Genera el informe de clientes vigentes con estado activo.
+     *
+     * @return array<string, mixed>
+     */
+    public function generarInformeClientesVigentes(): array
+    {
+        $hoy = now()->startOfDay();
+
+        /** @var Collection<int, Cliente> $clientes */
+        $clientes = Cliente::with('membresiaActual')
+            ->where('estado', true)
+            ->whereDate('fecha_vencimiento', '>=', $hoy)
+            ->orderBy('fecha_vencimiento')
+            ->orderBy('apellido')
+            ->orderBy('nombre')
+            ->get();
+
+        /** @var SupportCollection<int, array{membresia: string, cantidad_clientes: int}> $resumenPorMembresia */
+        $resumenPorMembresia = $clientes
+            ->groupBy(fn (Cliente $cliente) => $cliente->membresiaActual?->nombre_plan ?? 'Sin membresia')
+            ->map(function (Collection $grupo, string $nombreMembresia): array {
+                return [
+                    'membresia' => $nombreMembresia,
+                    'cantidad_clientes' => $grupo->count(),
+                ];
+            })
+            ->sortByDesc('cantidad_clientes')
+            ->values();
+
+        return [
+            'fecha_referencia' => $hoy,
+            'clientes' => $clientes,
+            'total_clientes_vigentes' => $clientes->count(),
             'resumen_por_membresia' => $resumenPorMembresia,
         ];
     }

@@ -13,4 +13,16 @@ class InformePolicy
     {
         return $user->estado && $user->autorizado_financiero;
     }
+
+    /**
+     * Solo usuarios activos con rol valido pueden ver el informe de clientes vigentes.
+     */
+    public function viewActiveClients(User $user): bool
+    {
+        return $user->estado && in_array($user->rol, [
+            'administrador',
+            'gerente',
+            'encargado',
+        ]);
+    }
 }

@@ -31,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Pago::class, PagoPolicy::class);
         Gate::policy(Membresia::class, MembresiaPolicy::class);
         Gate::define('viewFinancialReport', [InformePolicy::class,'viewFinancial']);
+        Gate::define('viewActiveClientsReport', [InformePolicy::class, 'viewActiveClients']);
 
     }
 }
