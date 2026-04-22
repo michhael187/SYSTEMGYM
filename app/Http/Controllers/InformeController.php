@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\InformeFinancieroRequest;
 use App\Services\InformeService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 
@@ -44,6 +45,40 @@ class InformeController extends Controller
         );
 
         return Pdf::loadView('informes.financiero_pdf', $informe)
+            ->setPaper('a4')
+            ->download($nombreArchivo);
+    }
+
+    /**
+     * Muestra el informe de clientes vigentes con estado activo.
+     */
+    public function clientesVigentes(Request $request): View
+    {
+        $this->authorize('viewActiveClientsReport');
+
+        $informe = $this->informeService->generarInformeClientesVigentes(
+            $request->only(['sort_by', 'sort_direction'])
+        );
+
+        return view('informes.clientes_vigentes', $informe);
+    }
+
+    /**
+     * Descarga una version PDF del informe de clientes vigentes.
+     */
+    public function descargarClientesVigentes(Request $request): Response
+    {
+        $this->authorize('viewActiveClientsReport');
+
+        $informe = $this->informeService->generarInformeClientesVigentes(
+            $request->only(['sort_by', 'sort_direction'])
+        );
+        $nombreArchivo = sprintf(
+            'informe_clientes_vigentes_%s.pdf',
+            $informe['fecha_referencia']->format('Ymd')
+        );
+
+        return Pdf::loadView('informes.clientes_vigentes_pdf', $informe)
             ->setPaper('a4')
             ->download($nombreArchivo);
     }
