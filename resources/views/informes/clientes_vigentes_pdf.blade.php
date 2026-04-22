@@ -24,18 +24,21 @@
         .cards {
             width: 100%;
             margin: 12px 0 16px;
+            border-collapse: separate;
+            border-spacing: 0;
         }
         .card {
-            width: 48%;
-            display: inline-block;
-            vertical-align: top;
+            width: 50%;
             border: 1px solid #d1d5db;
             border-radius: 6px;
             padding: 8px;
             box-sizing: border-box;
         }
-        .card + .card {
-            margin-left: 4%;
+        .card-left {
+            padding-right: 8px;
+        }
+        .card-right {
+            padding-left: 8px;
         }
         .card .label {
             color: #6b7280;
@@ -106,16 +109,22 @@
         </div>
     </div>
 
-    <div class="cards">
-        <div class="card">
-            <div class="label">Fecha de referencia</div>
-            <div class="value">{{ $fecha_referencia->format('d/m/Y') }}</div>
-        </div>
-        <div class="card">
-            <div class="label">Clientes vigentes activos</div>
-            <div class="value">{{ $total_clientes_vigentes }}</div>
-        </div>
-    </div>
+    <table class="cards">
+        <tr>
+            <td class="card-left">
+                <div class="card">
+                    <div class="label">Fecha de referencia</div>
+                    <div class="value">{{ $fecha_referencia->format('d/m/Y') }}</div>
+                </div>
+            </td>
+            <td class="card-right">
+                <div class="card">
+                    <div class="label">Clientes vigentes activos</div>
+                    <div class="value">{{ $total_clientes_vigentes }}</div>
+                </div>
+            </td>
+        </tr>
+    </table>
 
     <div class="section">
         <h2>Resumen por membresia</h2>
