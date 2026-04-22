@@ -83,7 +83,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/membresias/{membresia}/reactivar', [MembresiaController::class, 'reactivar'])
         ->name('membresias.reactivar');
 
-        
+    Route::get('/informes/financiero', [InformeController::class, 'financiero'])
+        ->name('informes.financiero');
+    Route::get('/informes/financiero/descargar', [InformeController::class, 'descargarFinanciero'])
+        ->name('informes.financiero.descargar');
 });
 
 require __DIR__.'/auth.php';

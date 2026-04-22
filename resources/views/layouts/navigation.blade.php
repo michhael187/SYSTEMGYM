@@ -15,6 +15,12 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    @if (Auth::user()->autorizado_financiero)
+                        <x-nav-link :href="route('informes.financiero')" :active="request()->routeIs('informes.financiero')">
+                            Informe Financiero
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -83,6 +89,12 @@
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
+
+                @if (Auth::user()->autorizado_financiero)
+                    <x-responsive-nav-link :href="route('informes.financiero')" :active="request()->routeIs('informes.financiero')">
+                        Informe Financiero
+                    </x-responsive-nav-link>
+                @endif
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
