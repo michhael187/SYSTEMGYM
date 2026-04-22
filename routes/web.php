@@ -1,4 +1,6 @@
 <?php
+use App\Http\Controllers\InformeController;
+use App\Http\Controllers\MembresiaController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\UsuarioController;
@@ -63,6 +65,25 @@ Route::middleware('auth')->group(function () {
     Route::post('/pagos', [PagoController::class, 'store'])
         ->name('pagos.store');
 
+        Route::get('/membresias/crear', [MembresiaController::class, 'create'])
+        ->name('membresias.create');
+
+    Route::post('/membresias', [MembresiaController::class, 'store'])
+        ->name('membresias.store');
+
+    Route::get('/membresias/{membresia}/editar', [MembresiaController::class, 'edit'])
+        ->name('membresias.edit');
+
+    Route::put('/membresias/{membresia}', [MembresiaController::class, 'update'])
+        ->name('membresias.update');
+
+    Route::patch('/membresias/{membresia}/baja', [MembresiaController::class, 'darDeBaja'])
+        ->name('membresias.baja');
+
+    Route::patch('/membresias/{membresia}/reactivar', [MembresiaController::class, 'reactivar'])
+        ->name('membresias.reactivar');
+
+        
 });
 
 require __DIR__.'/auth.php';

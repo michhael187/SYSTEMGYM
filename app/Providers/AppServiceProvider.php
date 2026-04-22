@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Membresia;
+use App\Policies\MembresiaPolicy;
 use App\Models\Pago;
 use App\Policies\PagoPolicy;
 use App\Models\User;
@@ -26,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Pago::class, PagoPolicy::class);
+        Gate::policy(Membresia::class, MembresiaPolicy::class);
 
     }
 }
