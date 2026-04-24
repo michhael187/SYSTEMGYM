@@ -82,4 +82,38 @@ class InformeController extends Controller
             ->setPaper('a4')
             ->download($nombreArchivo);
     }
+
+    /**
+     * Muestra el informe de clientes deudores.
+     */
+    public function clientesDeudores(Request $request): View
+    {
+        $this->authorize('viewOverdueClientsReport');
+
+        $informe = $this->informeService->generarInformeClientesDeudores(
+            $request->only(['sort_by', 'sort_direction'])
+        );
+
+        return view('informes.clientes_deudores', $informe);
+    }
+
+    /**
+     * Descarga una version PDF del informe de clientes deudores.
+     */
+    public function descargarClientesDeudores(Request $request): Response
+    {
+        $this->authorize('viewOverdueClientsReport');
+
+        $informe = $this->informeService->generarInformeClientesDeudores(
+            $request->only(['sort_by', 'sort_direction'])
+        );
+        $nombreArchivo = sprintf(
+            'informe_clientes_deudores_%s.pdf',
+            $informe['fecha_referencia']->format('Ymd')
+        );
+
+        return Pdf::loadView('informes.clientes_deudores_pdf', $informe)
+            ->setPaper('a4')
+            ->download($nombreArchivo);
+    }
 }

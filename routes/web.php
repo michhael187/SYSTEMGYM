@@ -91,6 +91,10 @@ Route::middleware('auth')->group(function () {
         ->name('informes.clientes_vigentes');
     Route::get('/informes/clientes-vigentes/descargar', [InformeController::class, 'descargarClientesVigentes'])
         ->name('informes.clientes_vigentes.descargar');
+    Route::get('/informes/clientes-deudores', [InformeController::class, 'clientesDeudores'])
+        ->name('informes.clientes_deudores');
+    Route::get('/informes/clientes-deudores/descargar', [InformeController::class, 'descargarClientesDeudores'])
+        ->name('informes.clientes_deudores.descargar');
 });
 
 require __DIR__.'/auth.php';

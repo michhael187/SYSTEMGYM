@@ -16,6 +16,18 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
+                    @can('viewActiveClientsReport')
+                        <x-nav-link :href="route('informes.clientes_vigentes')" :active="request()->routeIs('informes.clientes_vigentes')">
+                            Clientes Vigentes
+                        </x-nav-link>
+                    @endcan
+
+                    @can('viewOverdueClientsReport')
+                        <x-nav-link :href="route('informes.clientes_deudores')" :active="request()->routeIs('informes.clientes_deudores')">
+                            Clientes Deudores
+                        </x-nav-link>
+                    @endcan
+
                     @if (Auth::user()->autorizado_financiero)
                         <x-nav-link :href="route('informes.financiero')" :active="request()->routeIs('informes.financiero')">
                             Informe Financiero
@@ -89,6 +101,18 @@
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
+
+                @can('viewActiveClientsReport')
+                    <x-responsive-nav-link :href="route('informes.clientes_vigentes')" :active="request()->routeIs('informes.clientes_vigentes')">
+                        Clientes Vigentes
+                    </x-responsive-nav-link>
+                @endcan
+
+                @can('viewOverdueClientsReport')
+                    <x-responsive-nav-link :href="route('informes.clientes_deudores')" :active="request()->routeIs('informes.clientes_deudores')">
+                        Clientes Deudores
+                    </x-responsive-nav-link>
+                @endcan
 
                 @if (Auth::user()->autorizado_financiero)
                     <x-responsive-nav-link :href="route('informes.financiero')" :active="request()->routeIs('informes.financiero')">
