@@ -7,6 +7,8 @@ use App\Http\Requests\ReactivateUserRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use App\Services\UsuarioService;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class UsuarioController extends Controller
 {
@@ -15,9 +17,34 @@ class UsuarioController extends Controller
     }
 
     /**
+     * Muestra un listado de usuarios para acceder a editar, baja o reactivar.
+     */
+    public function index(Request $request): View
+    {
+        $this->authorize('update', User::class);
+
+        $busqueda = trim((string) $request->query('buscar', ''));
+
+        $usuarios = User::query()
+            ->when($busqueda !== '', function ($query) use ($busqueda) {
+                $query->where(function ($subQuery) use ($busqueda) {
+                    $subQuery->where('nombre', 'like', '%' . $busqueda . '%')
+                        ->orWhere('apellido', 'like', '%' . $busqueda . '%')
+                        ->orWhere('email', 'like', '%' . $busqueda . '%')
+                        ->orWhere('dni', 'like', '%' . $busqueda . '%');
+                });
+            })
+            ->orderBy('apellido')
+            ->orderBy('nombre')
+            ->get();
+
+        return view('usuarios.index', compact('usuarios', 'busqueda'));
+    }
+
+    /**
      * Muestra el formulario de alta de usuario.
      */
-    public function create()
+    public function create(): View
     {
         $this->authorize('create', User::class);
 
@@ -41,7 +68,7 @@ class UsuarioController extends Controller
         /**
      * Muestra el formulario de reactivacion de usuario.
      */
-    public function showReactivarForm()
+    public function showReactivarForm(): View
     {
         $this->authorize('update', User::class);
 
@@ -75,7 +102,7 @@ class UsuarioController extends Controller
      /**
      * Muestra el formulario de edicion de un usuario.
      */
-    public function edit(User $usuario)
+    public function edit(User $usuario): View
     {
         $this->authorize('update', User::class);
 
