@@ -20,7 +20,7 @@ class MembresiaController extends Controller
      */
     public function index(Request $request): View
     {
-        $this->authorize('create', Membresia::class);
+        $this->authorize('viewAny', Membresia::class);
 
         $busqueda = trim((string) $request->query('buscar', ''));
         $estado = (string) $request->query('estado', 'todas');
@@ -36,7 +36,8 @@ class MembresiaController extends Controller
                 $query->where('activo', false);
             })
             ->orderBy('nombre_plan')
-            ->get();
+            ->paginate(15)
+            ->withQueryString();
 
         return view('membresias.index', compact('membresias', 'busqueda', 'estado'));
     }

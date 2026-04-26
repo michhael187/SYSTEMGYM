@@ -45,7 +45,7 @@
             </div>
 
             <div class="overflow-hidden rounded-2xl bg-white shadow-sm">
-                @if ($membresias->isEmpty())
+                @if ($membresias->count() === 0)
                     <div class="p-6 text-gray-600">
                         No se encontraron membresias con ese criterio.
                     </div>
@@ -83,6 +83,9 @@
                         </table>
                     </div>
                 @endif
+            </div>
+            <div>
+                {{ $membresias->links() }}
             </div>
         </div>
     </div>

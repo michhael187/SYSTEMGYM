@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use Illuminate\Http\Request;
 use App\Services\ClienteService;
 use App\Http\Requests\UpdateClienteRequest;
+use Illuminate\View\View;
 
 class ClienteController extends Controller
 {
@@ -17,16 +18,19 @@ class ClienteController extends Controller
     /**
      * Muestra el formulario para buscar un cliente por DNI.
      */
-    public function buscarForm()
+    public function buscarForm(): View
     {
+        $this->authorize('viewAny', Cliente::class);
         return view('clientes.buscar');
     }
 
     /**
      * Muestra el formulario de alta de cliente.
      */
-    public function create()
+    public function create(): View
     {
+        $this->authorize('create', Cliente::class);
+
         $membresias = Membresia::where('activo', true)
             ->orderBy('nombre_plan')
             ->get();
@@ -39,6 +43,8 @@ class ClienteController extends Controller
      */
     public function store(StoreClienteRequest $request)
     {
+        $this->authorize('create', Cliente::class);
+
         $cliente = $this->clienteService->crearCliente($request->validated());
 
         return redirect()
@@ -52,6 +58,8 @@ class ClienteController extends Controller
      */
     public function buscar(Request $request)
     {
+        $this->authorize('viewAny', Cliente::class);
+
         $request->validate([
             'tipo_busqueda' => ['required', 'in:dni,apellido'],
             'valor' => ['required', 'string', 'max:255'],
@@ -101,8 +109,9 @@ class ClienteController extends Controller
     /**
      * Muestra la ficha del cliente para ver o modificar sus datos.
      */
-    public function edit(Cliente $cliente)
+    public function edit(Cliente $cliente): View
     {
+        $this->authorize('update', Cliente::class);
         return view('clientes.edit', compact('cliente'));
     }
 
@@ -111,6 +120,8 @@ class ClienteController extends Controller
      */
     public function update(UpdateClienteRequest $request, Cliente $cliente)
     {
+        $this->authorize('update', Cliente::class);
+
         $this->clienteService->actualizarCliente($cliente, $request->validated());
 
         return redirect()

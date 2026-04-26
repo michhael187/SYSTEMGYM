@@ -21,7 +21,7 @@ class UsuarioController extends Controller
      */
     public function index(Request $request): View
     {
-        $this->authorize('update', User::class);
+        $this->authorize('viewAny', User::class);
 
         $busqueda = trim((string) $request->query('buscar', ''));
 
@@ -36,7 +36,8 @@ class UsuarioController extends Controller
             })
             ->orderBy('apellido')
             ->orderBy('nombre')
-            ->get();
+            ->paginate(15)
+            ->withQueryString();
 
         return view('usuarios.index', compact('usuarios', 'busqueda'));
     }
@@ -104,7 +105,7 @@ class UsuarioController extends Controller
      */
     public function edit(User $usuario): View
     {
-        $this->authorize('update', User::class);
+        $this->authorize('update', $usuario);
 
         return view('usuarios.edit', compact('usuario'));
     }
@@ -114,7 +115,7 @@ class UsuarioController extends Controller
      */
     public function update(UpdateUserRequest $request, User $usuario)
     {
-        $this->authorize('update', User::class);
+        $this->authorize('update', $usuario);
 
         $this->usuarioService->actualizarUsuario($usuario, $request->validated());
 
@@ -129,7 +130,7 @@ class UsuarioController extends Controller
      */
     public function darDeBaja(User $usuario)
     {
-        $this->authorize('update', User::class);
+        $this->authorize('update', $usuario);
 
         $this->usuarioService->darDeBajaUsuario($usuario);
 

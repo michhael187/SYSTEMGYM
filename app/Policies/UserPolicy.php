@@ -7,18 +7,26 @@ use App\Models\User;
 class UserPolicy
 {
     /**
+     * Solo un administrador puede listar usuarios para gestion.
+     */
+    public function viewAny(User $user): bool
+    {
+        return $user->rol === 'administrador' && $user->estado;
+    }
+
+    /**
      * Solo un administrador puede dar de alta usuarios del sistema.
      */
     public function create(User $user): bool
     {
-        return $user->rol === 'administrador';
+        return $this->viewAny($user);
     }
 
     /**
      * Solo un administrador puede modificar o reactivar usuarios.
      */
-    public function update(User $user): bool
+    public function update(User $user, ?User $targetUser = null): bool
     {
-        return $user->rol === 'administrador';
+        return $this->viewAny($user);
     }
 }
