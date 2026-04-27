@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\RolUsuario;
 use App\Models\User;
 
 class UsuarioService
@@ -31,7 +32,7 @@ class UsuarioService
      */
     private function determinarAutorizacionFinanciera(string $rol): bool
     {
-        return $rol === 'gerente';
+        return RolUsuario::tryFrom($rol) === RolUsuario::GERENTE;
     }
 
     /**

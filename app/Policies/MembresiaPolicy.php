@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\RolUsuario;
 use App\Models\Membresia;
 use App\Models\User;
 
@@ -12,7 +13,7 @@ class MembresiaPolicy
      */
     private function puedeGestionarMembresias(User $user): bool
     {
-        return $user->rol === 'administrador' && $user->estado;
+        return $user->rol === RolUsuario::ADMINISTRADOR->value && $user->estado;
     }
 
     /**

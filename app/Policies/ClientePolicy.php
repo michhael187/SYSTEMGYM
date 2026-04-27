@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\RolUsuario;
 use App\Models\Cliente;
 use App\Models\User;
 
@@ -12,11 +13,7 @@ class ClientePolicy
      */
     private function puedeGestionarClientes(User $user): bool
     {
-        return $user->estado && in_array($user->rol, [
-            'administrador',
-            'gerente',
-            'encargado',
-        ], true);
+        return $user->estado && in_array($user->rol, RolUsuario::operativosValues(), true);
     }
 
     /**

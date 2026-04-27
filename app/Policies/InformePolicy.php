@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\RolUsuario;
 use App\Models\User;
 
 class InformePolicy
@@ -11,11 +12,7 @@ class InformePolicy
      */
     private function puedeVerInformesDeClientes(User $user): bool
     {
-        return $user->estado && in_array($user->rol, [
-            'administrador',
-            'gerente',
-            'encargado',
-        ], true);
+        return $user->estado && in_array($user->rol, RolUsuario::operativosValues(), true);
     }
 
     /**
