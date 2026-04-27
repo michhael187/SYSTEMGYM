@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\InformeFinancieroRequest;
-use App\Services\InformeService;
+use App\Services\InformeClientesService;
+use App\Services\InformeFinancieroService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -11,8 +12,10 @@ use Illuminate\View\View;
 
 class InformeController extends Controller
 {
-    public function __construct(private InformeService $informeService)
-    {
+    public function __construct(
+        private InformeFinancieroService $informeFinancieroService,
+        private InformeClientesService $informeClientesService
+    ) {
     }
 
     /**
@@ -22,7 +25,7 @@ class InformeController extends Controller
     {
         $this->authorize('viewFinancialReport');
 
-        $informe = $this->informeService->generarInformeFinanciero($request->validated());
+        $informe = $this->informeFinancieroService->generarInforme($request->validated());
 
         return view('informes.financiero', $informe);
     }
@@ -35,8 +38,8 @@ class InformeController extends Controller
         $this->authorize('viewFinancialReport');
 
         $filtros = $request->validated();
-        [$fechaDesde, $fechaHasta] = $this->informeService->resolverRangoFechas($filtros);
-        $informe = $this->informeService->generarInformeFinanciero($filtros);
+        [$fechaDesde, $fechaHasta] = $this->informeFinancieroService->resolverRangoFechas($filtros);
+        $informe = $this->informeFinancieroService->generarInforme($filtros);
 
         $nombreArchivo = sprintf(
             'informe_financiero_%s_a_%s.pdf',
@@ -56,7 +59,7 @@ class InformeController extends Controller
     {
         $this->authorize('viewActiveClientsReport');
 
-        $informe = $this->informeService->generarInformeClientesVigentes(
+        $informe = $this->informeClientesService->generarInformeClientesVigentes(
             $request->only(['sort_by', 'sort_direction'])
         );
 
@@ -70,7 +73,7 @@ class InformeController extends Controller
     {
         $this->authorize('viewActiveClientsReport');
 
-        $informe = $this->informeService->generarInformeClientesVigentes(
+        $informe = $this->informeClientesService->generarInformeClientesVigentes(
             $request->only(['sort_by', 'sort_direction'])
         );
         $nombreArchivo = sprintf(
@@ -90,7 +93,7 @@ class InformeController extends Controller
     {
         $this->authorize('viewOverdueClientsReport');
 
-        $informe = $this->informeService->generarInformeClientesDeudores(
+        $informe = $this->informeClientesService->generarInformeClientesDeudores(
             $request->only(['sort_by', 'sort_direction'])
         );
 
@@ -104,7 +107,7 @@ class InformeController extends Controller
     {
         $this->authorize('viewOverdueClientsReport');
 
-        $informe = $this->informeService->generarInformeClientesDeudores(
+        $informe = $this->informeClientesService->generarInformeClientesDeudores(
             $request->only(['sort_by', 'sort_direction'])
         );
         $nombreArchivo = sprintf(
