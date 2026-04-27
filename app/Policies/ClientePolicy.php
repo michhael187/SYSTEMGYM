@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Cliente;
 use App\Models\User;
 
 class ClientePolicy
@@ -37,7 +38,7 @@ class ClientePolicy
     /**
      * Usuarios activos habilitados para edicion de clientes.
      */
-    public function update(User $user, ?object $target = null): bool
+    public function update(User $user, ?Cliente $cliente = null): bool
     {
         return $this->puedeGestionarClientes($user);
     }

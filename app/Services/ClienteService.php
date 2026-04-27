@@ -42,13 +42,17 @@ class ClienteService
      */
     public function actualizarCliente(Cliente $cliente, array $datos): Cliente
     {
+        $membresia = Membresia::findOrFail($datos['membresia_actual_id']);
+        $fechaUltimoPago = Carbon::parse($datos['fecha_ultimo_pago']);
+        $fechaVencimiento = $this->vigenciaService->calcularVencimientoInicial($membresia, $fechaUltimoPago);
+
         $cliente->update([
             'nombre' => $datos['nombre'],
             'apellido' => $datos['apellido'],
             'telefono' => $datos['telefono'],
             'membresia_actual_id' => $datos['membresia_actual_id'],
-            'fecha_ultimo_pago' => $datos['fecha_ultimo_pago'],
-            'fecha_vencimiento' => $datos['fecha_vencimiento'],
+            'fecha_ultimo_pago' => $fechaUltimoPago,
+            'fecha_vencimiento' => $fechaVencimiento->format('Y-m-d'),
             'peso' => $datos['peso'],
             'altura' => $datos['altura'],
             'observaciones' => $datos['observaciones'],

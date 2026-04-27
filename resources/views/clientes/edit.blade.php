@@ -63,7 +63,7 @@
                     </div>
 
                     <div>
-                        <label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono</label>
+                        <label for="telefono" class="block text-sm font-medium text-gray-700">Telefono</label>
                         <input
                             type="text"
                             name="telefono"
@@ -74,7 +74,7 @@
                     </div>
 
                     <div>
-                        <label for="membresia_actual_id" class="block text-sm font-medium text-gray-700">Membresía actual</label>
+                        <label for="membresia_actual_id" class="block text-sm font-medium text-gray-700">Membresia actual</label>
                         <input
                             type="number"
                             name="membresia_actual_id"
@@ -85,7 +85,7 @@
                     </div>
 
                     <div>
-                        <label for="fecha_ultimo_pago" class="block text-sm font-medium text-gray-700">Fecha último pago</label>
+                        <label for="fecha_ultimo_pago" class="block text-sm font-medium text-gray-700">Fecha ultimo pago</label>
                         <input
                             type="datetime-local"
                             name="fecha_ultimo_pago"
@@ -99,11 +99,14 @@
                         <label for="fecha_vencimiento" class="block text-sm font-medium text-gray-700">Fecha vencimiento</label>
                         <input
                             type="date"
-                            name="fecha_vencimiento"
                             id="fecha_vencimiento"
-                            value="{{ old('fecha_vencimiento', optional($cliente->fecha_vencimiento)->format('Y-m-d')) }}"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                            value="{{ optional($cliente->fecha_vencimiento)->format('Y-m-d') }}"
+                            disabled
+                            class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm"
                         >
+                        <p class="mt-1 text-sm text-gray-500">
+                            La fecha de vencimiento se calcula automaticamente segun la membresia y la fecha del ultimo pago.
+                        </p>
                     </div>
 
                     <div>

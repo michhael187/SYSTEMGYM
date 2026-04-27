@@ -101,7 +101,7 @@ class ClienteController extends Controller
      */
     public function edit(Cliente $cliente): View
     {
-        $this->authorize('update', Cliente::class);
+        $this->authorize('update', $cliente);
 
         return view('clientes.edit', compact('cliente'));
     }
@@ -111,7 +111,7 @@ class ClienteController extends Controller
      */
     public function update(UpdateClienteRequest $request, Cliente $cliente): RedirectResponse
     {
-        $this->authorize('update', Cliente::class);
+        $this->authorize('update', $cliente);
 
         $this->clienteService->actualizarCliente($cliente, $request->validated());
 
