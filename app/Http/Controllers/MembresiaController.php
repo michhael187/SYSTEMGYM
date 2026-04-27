@@ -27,16 +27,9 @@ class MembresiaController extends Controller
         $estado = (string) $request->query('estado', 'todas');
 
         $membresias = Membresia::query()
-            ->when($busqueda !== '', function ($query) use ($busqueda) {
-                $query->where('nombre_plan', 'like', '%' . $busqueda . '%');
-            })
-            ->when($estado === 'activas', function ($query) {
-                $query->where('activo', true);
-            })
-            ->when($estado === 'inactivas', function ($query) {
-                $query->where('activo', false);
-            })
-            ->orderBy('nombre_plan')
+            ->buscarPorNombrePlan($busqueda)
+            ->filtrarPorEstado($estado)
+            ->ordenadasPorNombre()
             ->paginate(15)
             ->withQueryString();
 

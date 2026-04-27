@@ -26,16 +26,8 @@ class UsuarioController extends Controller
         $busqueda = trim((string) $request->query('buscar', ''));
 
         $usuarios = User::query()
-            ->when($busqueda !== '', function ($query) use ($busqueda) {
-                $query->where(function ($subQuery) use ($busqueda) {
-                    $subQuery->where('nombre', 'like', '%' . $busqueda . '%')
-                        ->orWhere('apellido', 'like', '%' . $busqueda . '%')
-                        ->orWhere('email', 'like', '%' . $busqueda . '%')
-                        ->orWhere('dni', 'like', '%' . $busqueda . '%');
-                });
-            })
-            ->orderBy('apellido')
-            ->orderBy('nombre')
+            ->buscarParaGestion($busqueda)
+            ->ordenadosPorNombre()
             ->paginate(15)
             ->withQueryString();
 
