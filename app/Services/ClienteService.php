@@ -2,22 +2,25 @@
 
 namespace App\Services;
 
+use App\Models\Cliente;
 use App\Models\Membresia;
 use Carbon\Carbon;
-use App\Models\Cliente;
 
 class ClienteService
 {
+    public function __construct(private VigenciaService $vigenciaService)
+    {
+    }
 
-        /**
+    /**
      * Crea un nuevo cliente con su estado actual inicial.
      */
-        public function crearCliente(array $datos): Cliente
+    public function crearCliente(array $datos): Cliente
     {
         $membresia = Membresia::findOrFail($datos['membresia_actual_id']);
 
         $fechaUltimoPago = Carbon::parse($datos['fecha_ultimo_pago']);
-        $fechaVencimiento = $fechaUltimoPago->copy()->addDays($membresia->duracion_dias);
+        $fechaVencimiento = $this->vigenciaService->calcularVencimientoInicial($membresia, $fechaUltimoPago);
 
         return Cliente::create([
             'dni' => $datos['dni'],
@@ -33,8 +36,6 @@ class ClienteService
             'estado' => $datos['estado'],
         ]);
     }
-
-
 
     /**
      * Actualiza los datos editables de un cliente existente.

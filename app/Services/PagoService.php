@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\DB;
 
 class PagoService
 {
+    public function __construct(private VigenciaService $vigenciaService)
+    {
+    }
+
     /**
      * Registra un nuevo pago y actualiza el estado actual del cliente.
      */
@@ -21,16 +25,7 @@ class PagoService
             $membresia = Membresia::findOrFail($datos['membresia_id']);
 
             $fechaPago = Carbon::parse($datos['fecha_pago']);
-            $fechaBase = $fechaPago->copy();
-
-            if (
-                $cliente->fecha_vencimiento &&
-                Carbon::parse($cliente->fecha_vencimiento)->greaterThanOrEqualTo($fechaPago->copy()->startOfDay())
-            ) {
-                $fechaBase = Carbon::parse($cliente->fecha_vencimiento);
-            }
-
-            $fechaFin = $fechaBase->copy()->addDays($membresia->duracion_dias);
+            $fechaFin = $this->vigenciaService->calcularNuevaVigencia($cliente, $membresia, $fechaPago);
 
             $pago = Pago::create([
                 'cliente_id' => $cliente->id,
