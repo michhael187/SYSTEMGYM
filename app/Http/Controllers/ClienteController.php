@@ -67,7 +67,9 @@ class ClienteController extends Controller
         $valor = $datosValidados['valor'];
 
         if ($tipoBusqueda === 'dni') {
-            $cliente = Cliente::where('dni', (int) $valor)->first();
+            $cliente = Cliente::query()
+                ->buscar($tipoBusqueda, $valor)
+                ->first();
 
             if (! $cliente) {
                 return redirect()
@@ -79,9 +81,9 @@ class ClienteController extends Controller
             return redirect()->route('clientes.edit', $cliente);
         }
 
-        $resultados = Cliente::where('apellido', 'like', '%' . $valor . '%')
-            ->orderBy('apellido')
-            ->orderBy('nombre')
+        $resultados = Cliente::query()
+            ->buscar($tipoBusqueda, $valor)
+            ->ordenadosPorNombre()
             ->get();
 
         if ($resultados->isEmpty()) {

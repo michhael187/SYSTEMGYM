@@ -39,7 +39,7 @@
                             Administra altas, consulta, modificacion, baja y reactivacion de usuarios.
                         </p>
                         <div class="mt-6 flex flex-col gap-3">
-                            <a href="{{ route('usuarios.create') }}" class="rounded-lg bg-black px-4 py-3 text-center text-sm font-medium text-white hover:bg-slate-800">
+                            <a href="{{ route('usuarios.create') }}" class="rounded-lg border border-slate-300 px-4 py-3 text-center text-sm font-medium text-slate-700">
                                 Instanciar nuevo usuario
                             </a>
                             <a href="{{ route('usuarios.index') }}" class="rounded-lg border border-slate-300 px-4 py-3 text-center text-sm font-medium text-slate-700">
@@ -59,7 +59,7 @@
                             Registra clientes nuevos y accede al flujo de ver o modificar clientes ya cargados.
                         </p>
                         <div class="mt-6 flex flex-col gap-3">
-                            <a href="{{ route('clientes.create') }}" class="rounded-lg bg-black px-4 py-3 text-center text-sm font-medium text-white hover:bg-slate-800">
+                            <a href="{{ route('clientes.create') }}" class="rounded-lg border border-slate-300 px-4 py-3 text-center text-sm font-medium text-slate-700">
                                 Registro de Clientes
                             </a>
                             <a href="{{ route('clientes.buscar.form') }}" class="rounded-lg border border-slate-300 px-4 py-3 text-center text-sm font-medium text-slate-700">
@@ -76,7 +76,7 @@
                             Da de alta planes nuevos y entra al listado para editar, dar de baja o reactivar membresias.
                         </p>
                         <div class="mt-6 flex flex-col gap-3">
-                            <a href="{{ route('membresias.create') }}" class="rounded-lg bg-black px-4 py-3 text-center text-sm font-medium text-white hover:bg-slate-800">
+                            <a href="{{ route('membresias.create') }}" class="rounded-lg border border-slate-300 px-4 py-3 text-center text-sm font-medium text-slate-700">
                                 Dar alta nueva membresia
                             </a>
                             <a href="{{ route('membresias.index') }}" class="rounded-lg border border-slate-300 px-4 py-3 text-center text-sm font-medium text-slate-700">
@@ -93,7 +93,7 @@
                             Busca el cliente, selecciona la membresia y registra el pago con actualizacion de vigencia.
                         </p>
                         <div class="mt-6 flex flex-col gap-3">
-                            <a href="{{ route('pagos.create') }}" class="rounded-lg bg-black px-4 py-3 text-center text-sm font-medium text-white hover:bg-slate-800">
+                            <a href="{{ route('pagos.create') }}" class="rounded-lg border border-slate-300 px-4 py-3 text-center text-sm font-medium text-slate-700">
                                 Registrar Nuevo Pago
                             </a>
                         </div>
