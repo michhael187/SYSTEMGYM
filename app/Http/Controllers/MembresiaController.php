@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\View\View;
-use App\Models\Membresia;
-use App\Services\MembresiaService;
 use App\Http\Requests\StoreMembresiaRequest;
 use App\Http\Requests\UpdateMembresiaRequest;
+use App\Models\Membresia;
+use App\Services\MembresiaService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class MembresiaController extends Controller
 {
@@ -48,13 +49,14 @@ class MembresiaController extends Controller
     public function create(): View
     {
         $this->authorize('create', Membresia::class);
+
         return view('membresias.create');
     }
 
     /**
      * Procesa el alta de una nueva membresia.
      */
-    public function store(StoreMembresiaRequest $request)
+    public function store(StoreMembresiaRequest $request): RedirectResponse
     {
         $this->authorize('create', Membresia::class);
 
@@ -62,7 +64,7 @@ class MembresiaController extends Controller
 
         return redirect()
             ->route('membresias.edit', $membresia)
-            ->with('success', 'Membresía creada correctamente.');
+            ->with('success', 'Membresia creada correctamente.');
     }
 
     /**
@@ -78,7 +80,7 @@ class MembresiaController extends Controller
     /**
      * Procesa la modificacion de una membresia existente.
      */
-    public function update(UpdateMembresiaRequest $request, Membresia $membresia)
+    public function update(UpdateMembresiaRequest $request, Membresia $membresia): RedirectResponse
     {
         $this->authorize('update', $membresia);
 
@@ -86,13 +88,13 @@ class MembresiaController extends Controller
 
         return redirect()
             ->route('membresias.edit', $membresia)
-            ->with('success', 'Membresía actualizada correctamente.');
+            ->with('success', 'Membresia actualizada correctamente.');
     }
 
     /**
      * Realiza la baja logica de una membresia.
      */
-    public function darDeBaja(Membresia $membresia)
+    public function darDeBaja(Membresia $membresia): RedirectResponse
     {
         $this->authorize('update', $membresia);
 
@@ -100,13 +102,13 @@ class MembresiaController extends Controller
 
         return redirect()
             ->route('membresias.edit', $membresia)
-            ->with('success', 'Membresía dada de baja correctamente.');
+            ->with('success', 'Membresia dada de baja correctamente.');
     }
 
     /**
      * Reactiva una membresia inactiva.
      */
-    public function reactivar(Membresia $membresia)
+    public function reactivar(Membresia $membresia): RedirectResponse
     {
         $this->authorize('update', $membresia);
 
@@ -114,7 +116,6 @@ class MembresiaController extends Controller
 
         return redirect()
             ->route('membresias.edit', $membresia)
-            ->with('success', 'Membresía reactivada correctamente.');
+            ->with('success', 'Membresia reactivada correctamente.');
     }
-
 }

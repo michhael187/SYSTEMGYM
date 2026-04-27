@@ -2,20 +2,27 @@
 
 namespace App\Policies;
 
-use App\Models\Pago;
 use App\Models\User;
 
 class PagoPolicy
 {
     /**
-     * Solo usuarios activos con rol valido pueden registrar pagos.
+     * Determina si el usuario puede registrar pagos.
      */
-    public function create(User $user): bool
+    private function puedeRegistrarPagos(User $user): bool
     {
         return $user->estado && in_array($user->rol, [
             'administrador',
             'gerente',
             'encargado',
-        ]);
+        ], true);
+    }
+
+    /**
+     * Solo usuarios activos con rol valido pueden registrar pagos.
+     */
+    public function create(User $user): bool
+    {
+        return $this->puedeRegistrarPagos($user);
     }
 }

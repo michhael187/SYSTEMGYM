@@ -8,11 +8,19 @@ use App\Models\User;
 class MembresiaPolicy
 {
     /**
+     * Determina si el usuario puede administrar membresias.
+     */
+    private function puedeGestionarMembresias(User $user): bool
+    {
+        return $user->rol === 'administrador' && $user->estado;
+    }
+
+    /**
      * Solo un administrador puede listar membresias para gestion.
      */
     public function viewAny(User $user): bool
     {
-        return $user->rol === 'administrador' && $user->estado;
+        return $this->puedeGestionarMembresias($user);
     }
 
     /**
@@ -20,14 +28,14 @@ class MembresiaPolicy
      */
     public function create(User $user): bool
     {
-        return $this->viewAny($user);
+        return $this->puedeGestionarMembresias($user);
     }
 
     /**
      * Solo un administrador puede modificar, dar de baja o reactivar membresias.
      */
-    public function update(User $user, Membresia $membresia): bool
+    public function update(User $user, ?Membresia $membresia = null): bool
     {
-        return $user->rol === 'administrador' && $user->estado;
+        return $this->puedeGestionarMembresias($user);
     }
 }
