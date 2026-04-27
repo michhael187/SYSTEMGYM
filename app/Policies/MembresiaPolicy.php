@@ -8,11 +8,19 @@ use App\Models\User;
 class MembresiaPolicy
 {
     /**
+     * Solo un administrador puede listar membresias para gestion.
+     */
+    public function viewAny(User $user): bool
+    {
+        return $user->rol === 'administrador' && $user->estado;
+    }
+
+    /**
      * Solo un administrador puede crear membresias.
      */
     public function create(User $user): bool
     {
-        return $user->rol === 'administrador' && $user->estado;
+        return $this->viewAny($user);
     }
 
     /**

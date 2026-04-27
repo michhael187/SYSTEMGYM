@@ -1,12 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Membresia;
+
+use App\Http\Requests\BuscarClienteRequest;
 use App\Http\Requests\StoreClienteRequest;
-use App\Models\Cliente;
-use Illuminate\Http\Request;
-use App\Services\ClienteService;
 use App\Http\Requests\UpdateClienteRequest;
+use App\Models\Cliente;
+use App\Models\Membresia;
+use App\Services\ClienteService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class ClienteController extends Controller
 {
@@ -17,16 +20,20 @@ class ClienteController extends Controller
     /**
      * Muestra el formulario para buscar un cliente por DNI.
      */
-    public function buscarForm()
+    public function buscarForm(): View
     {
+        $this->authorize('viewAny', Cliente::class);
+
         return view('clientes.buscar');
     }
 
     /**
      * Muestra el formulario de alta de cliente.
      */
-    public function create()
+    public function create(): View
     {
+        $this->authorize('create', Cliente::class);
+
         $membresias = Membresia::where('activo', true)
             ->orderBy('nombre_plan')
             ->get();
@@ -37,8 +44,10 @@ class ClienteController extends Controller
     /**
      * Procesa el alta de un nuevo cliente.
      */
-    public function store(StoreClienteRequest $request)
+    public function store(StoreClienteRequest $request): RedirectResponse
     {
+        $this->authorize('create', Cliente::class);
+
         $cliente = $this->clienteService->crearCliente($request->validated());
 
         return redirect()
@@ -46,35 +55,25 @@ class ClienteController extends Controller
             ->with('success', 'Cliente registrado correctamente.');
     }
 
-
     /**
      * Busca un cliente por DNI o apellido.
      */
-    public function buscar(Request $request)
+    public function buscar(BuscarClienteRequest $request): View|RedirectResponse
     {
-        $request->validate([
-            'tipo_busqueda' => ['required', 'in:dni,apellido'],
-            'valor' => ['required', 'string', 'max:255'],
-        ]);
+        $this->authorize('viewAny', Cliente::class);
 
-        $tipoBusqueda = $request->tipo_busqueda;
-        $valor = trim($request->valor);
+        $datosValidados = $request->validated();
+        $tipoBusqueda = $datosValidados['tipo_busqueda'];
+        $valor = $datosValidados['valor'];
 
         if ($tipoBusqueda === 'dni') {
-            if (! is_numeric($valor)) {
-                return redirect()
-                    ->route('clientes.buscar.form')
-                    ->withInput()
-                    ->with('warning', 'Para buscar por DNI debe ingresar solo números.');
-            }
-
             $cliente = Cliente::where('dni', (int) $valor)->first();
 
             if (! $cliente) {
                 return redirect()
                     ->route('clientes.buscar.form')
                     ->withInput()
-                    ->with('warning', 'No se encontró un cliente con ese DNI.');
+                    ->with('warning', 'No se encontro un cliente con ese DNI.');
             }
 
             return redirect()->route('clientes.edit', $cliente);
@@ -97,20 +96,23 @@ class ClienteController extends Controller
         ]);
     }
 
-
     /**
      * Muestra la ficha del cliente para ver o modificar sus datos.
      */
-    public function edit(Cliente $cliente)
+    public function edit(Cliente $cliente): View
     {
+        $this->authorize('update', Cliente::class);
+
         return view('clientes.edit', compact('cliente'));
     }
 
     /**
      * Procesa la modificacion de un cliente existente.
      */
-    public function update(UpdateClienteRequest $request, Cliente $cliente)
+    public function update(UpdateClienteRequest $request, Cliente $cliente): RedirectResponse
     {
+        $this->authorize('update', Cliente::class);
+
         $this->clienteService->actualizarCliente($cliente, $request->validated());
 
         return redirect()

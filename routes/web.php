@@ -19,7 +19,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-        
+
+    Route::get('/usuarios', [UsuarioController::class, 'index'])
+        ->name('usuarios.index');
+
     Route::get('/usuarios/crear', [UsuarioController::class, 'create'])
         ->name('usuarios.create');
 
@@ -58,14 +61,17 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/clientes', [ClienteController::class, 'store'])
         ->name('clientes.store');
-    
-        Route::get('/pagos/crear', [PagoController::class, 'create'])
+
+    Route::get('/pagos/crear', [PagoController::class, 'create'])
         ->name('pagos.create');
 
     Route::post('/pagos', [PagoController::class, 'store'])
         ->name('pagos.store');
 
-        Route::get('/membresias/crear', [MembresiaController::class, 'create'])
+    Route::get('/membresias', [MembresiaController::class, 'index'])
+        ->name('membresias.index');
+
+    Route::get('/membresias/crear', [MembresiaController::class, 'create'])
         ->name('membresias.create');
 
     Route::post('/membresias', [MembresiaController::class, 'store'])
@@ -91,6 +97,10 @@ Route::middleware('auth')->group(function () {
         ->name('informes.clientes_vigentes');
     Route::get('/informes/clientes-vigentes/descargar', [InformeController::class, 'descargarClientesVigentes'])
         ->name('informes.clientes_vigentes.descargar');
+    Route::get('/informes/clientes-deudores', [InformeController::class, 'clientesDeudores'])
+        ->name('informes.clientes_deudores');
+    Route::get('/informes/clientes-deudores/descargar', [InformeController::class, 'descargarClientesDeudores'])
+        ->name('informes.clientes_deudores.descargar');
 });
 
 require __DIR__.'/auth.php';

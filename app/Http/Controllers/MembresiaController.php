@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 use App\Models\Membresia;
 use App\Services\MembresiaService;
 use App\Http\Requests\StoreMembresiaRequest;
@@ -14,9 +16,36 @@ class MembresiaController extends Controller
     }
 
     /**
+     * Muestra el listado de membresias para editar, dar de baja o reactivar.
+     */
+    public function index(Request $request): View
+    {
+        $this->authorize('viewAny', Membresia::class);
+
+        $busqueda = trim((string) $request->query('buscar', ''));
+        $estado = (string) $request->query('estado', 'todas');
+
+        $membresias = Membresia::query()
+            ->when($busqueda !== '', function ($query) use ($busqueda) {
+                $query->where('nombre_plan', 'like', '%' . $busqueda . '%');
+            })
+            ->when($estado === 'activas', function ($query) {
+                $query->where('activo', true);
+            })
+            ->when($estado === 'inactivas', function ($query) {
+                $query->where('activo', false);
+            })
+            ->orderBy('nombre_plan')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('membresias.index', compact('membresias', 'busqueda', 'estado'));
+    }
+
+    /**
      * Muestra el formulario de alta de membresia.
      */
-    public function create()
+    public function create(): View
     {
         $this->authorize('create', Membresia::class);
         return view('membresias.create');
@@ -39,7 +68,7 @@ class MembresiaController extends Controller
     /**
      * Muestra el formulario de edicion de una membresia.
      */
-    public function edit(Membresia $membresia)
+    public function edit(Membresia $membresia): View
     {
         $this->authorize('update', $membresia);
 

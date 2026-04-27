@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pago;
+use App\Http\Requests\BuscarPagoClienteRequest;
+use App\Http\Requests\StorePagoRequest;
 use App\Models\Cliente;
 use App\Models\Membresia;
+use App\Models\Pago;
 use App\Services\PagoService;
-use App\Http\Requests\StorePagoRequest;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class PagoController extends Controller
 {
@@ -14,19 +17,20 @@ class PagoController extends Controller
     {
     }
 
-        /**
+    /**
      * Muestra el formulario para registrar un nuevo pago.
      */
-    public function create(\Illuminate\Http\Request $request)
+    public function create(BuscarPagoClienteRequest $request): View
     {
-       $this->authorize('create', Pago::class);
+        $this->authorize('create', Pago::class);
 
         $membresias = Membresia::where('activo', true)
             ->orderBy('nombre_plan')
             ->get();
 
-        $tipoBusqueda = $request->get('tipo_busqueda', 'dni');
-        $valorBusqueda = trim((string) $request->get('valor_busqueda', ''));
+        $datosValidados = $request->validated();
+        $tipoBusqueda = $datosValidados['tipo_busqueda'] ?? 'dni';
+        $valorBusqueda = $datosValidados['valor_busqueda'] ?? '';
         $clientes = collect();
 
         if ($valorBusqueda !== '') {
@@ -34,11 +38,7 @@ class PagoController extends Controller
                 ->orderBy('nombre');
 
             if ($tipoBusqueda === 'dni') {
-                if (is_numeric($valorBusqueda)) {
-                    $query->where('dni', (int) $valorBusqueda);
-                } else {
-                    $query->whereRaw('1 = 0');
-                }
+                $query->where('dni', (int) $valorBusqueda);
             } else {
                 $query->where('apellido', 'like', '%' . $valorBusqueda . '%');
             }
@@ -54,15 +54,14 @@ class PagoController extends Controller
         ));
     }
 
-
     /**
      * Procesa el registro de un nuevo pago.
      */
-    public function store(StorePagoRequest $request)
+    public function store(StorePagoRequest $request): RedirectResponse
     {
         $this->authorize('create', Pago::class);
 
-        $pago = $this->pagoService->registrarPago(
+        $this->pagoService->registrarPago(
             $request->validated(),
             $request->user()
         );
