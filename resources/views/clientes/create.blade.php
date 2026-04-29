@@ -8,6 +8,27 @@
     <div class="py-6">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
+                @if (session('success'))
+                    <div class="mb-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-emerald-800">
+                        <p class="font-semibold">{{ session('success') }}</p>
+
+                        @if (session('cliente_creado_id'))
+                            <p class="mt-2 text-sm">
+                                Cliente registrado: {{ session('cliente_creado_nombre') }}.
+                            </p>
+
+                            <div class="mt-4">
+                                <a
+                                    href="{{ route('pagos.create', ['cliente_id' => session('cliente_creado_id')]) }}"
+                                    class="inline-flex rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
+                                >
+                                    Registrar Primer Pago
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                @endif
+
                 @if ($errors->any())
                     <div class="mb-4 rounded-md bg-red-100 px-4 py-3 text-red-800">
                         <strong>Se encontraron errores:</strong>
@@ -56,39 +77,12 @@
                     </div>
 
                     <div>
-                        <label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono</label>
+                        <label for="telefono" class="block text-sm font-medium text-gray-700">Telefono</label>
                         <input
                             type="text"
                             name="telefono"
                             id="telefono"
                             value="{{ old('telefono') }}"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                        >
-                    </div>
-
-                    <div>
-                        <label for="membresia_actual_id" class="block text-sm font-medium text-gray-700">Membresía actual</label>
-                        <select
-                            name="membresia_actual_id"
-                            id="membresia_actual_id"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                        >
-                            <option value="">Seleccione una membresía</option>
-                            @foreach ($membresias as $membresia)
-                                <option value="{{ $membresia->id }}" {{ old('membresia_actual_id') == $membresia->id ? 'selected' : '' }}>
-                                    {{ $membresia->nombre_plan }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="fecha_ultimo_pago" class="block text-sm font-medium text-gray-700">Fecha último pago</label>
-                        <input
-                            type="datetime-local"
-                            name="fecha_ultimo_pago"
-                            id="fecha_ultimo_pago"
-                            value="{{ old('fecha_ultimo_pago', now()->format('Y-m-d\TH:i')) }}"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                         >
                     </div>
@@ -133,6 +127,10 @@
                             <option value="1" {{ old('estado', '1') === '1' ? 'selected' : '' }}>Activo</option>
                             <option value="0" {{ old('estado') === '0' ? 'selected' : '' }}>Inactivo</option>
                         </select>
+                    </div>
+
+                    <div class="rounded-lg border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+                        La membresia y la fecha del ultimo pago se asignaran cuando registres el primer pago del cliente.
                     </div>
 
                     <div>

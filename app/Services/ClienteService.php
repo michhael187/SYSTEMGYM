@@ -17,19 +17,14 @@ class ClienteService
      */
     public function crearCliente(array $datos): Cliente
     {
-        $membresia = Membresia::findOrFail($datos['membresia_actual_id']);
-
-        $fechaUltimoPago = Carbon::parse($datos['fecha_ultimo_pago']);
-        $fechaVencimiento = $this->vigenciaService->calcularVencimientoInicial($membresia, $fechaUltimoPago);
-
         return Cliente::create([
             'dni' => $datos['dni'],
             'nombre' => $datos['nombre'],
             'apellido' => $datos['apellido'],
             'telefono' => $datos['telefono'],
-            'membresia_actual_id' => $datos['membresia_actual_id'],
-            'fecha_ultimo_pago' => $datos['fecha_ultimo_pago'],
-            'fecha_vencimiento' => $fechaVencimiento->format('Y-m-d'),
+            'membresia_actual_id' => null,
+            'fecha_ultimo_pago' => null,
+            'fecha_vencimiento' => null,
             'peso' => $datos['peso'],
             'altura' => $datos['altura'],
             'observaciones' => $datos['observaciones'],

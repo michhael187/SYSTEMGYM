@@ -34,6 +34,7 @@ class BuscarPagoClienteRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'cliente_id' => ['nullable', 'integer', 'exists:clientes,id'],
             'tipo_busqueda' => ['nullable', 'in:dni,apellido'],
             'valor_busqueda' => ['nullable', 'string', 'max:255'],
         ];

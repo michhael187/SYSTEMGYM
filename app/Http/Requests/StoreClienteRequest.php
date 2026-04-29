@@ -24,8 +24,6 @@ class StoreClienteRequest extends FormRequest
             'nombre' => ['required', 'string', 'max:255'],
             'apellido' => ['required', 'string', 'max:255'],
             'telefono' => ['nullable', 'string', 'max:255'],
-            'membresia_actual_id' => ['required', 'exists:membresias,id'],
-            'fecha_ultimo_pago' => ['required', 'date'],
             'peso' => ['nullable', 'numeric', 'between:0,999.99'],
             'altura' => ['nullable', 'numeric', 'between:0,999.99'],
             'observaciones' => ['nullable', 'string'],
