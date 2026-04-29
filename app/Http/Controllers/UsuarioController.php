@@ -26,6 +26,7 @@ class UsuarioController extends Controller
         $busqueda = trim((string) $request->query('buscar', ''));
 
         $usuarios = User::query()
+            ->whereKeyNot($request->user()->id)
             ->buscarParaGestion($busqueda)
             ->ordenadosPorNombre()
             ->paginate(15)

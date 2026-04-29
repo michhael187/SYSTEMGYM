@@ -28,6 +28,14 @@ class UserPolicy
      */
     public function update(User $user, ?User $targetUser = null): bool
     {
-        return $this->viewAny($user);
+        if (! $this->viewAny($user)) {
+            return false;
+        }
+
+        if ($targetUser && $user->is($targetUser)) {
+            return false;
+        }
+
+        return true;
     }
 }

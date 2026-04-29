@@ -56,19 +56,21 @@
                                 >
                                     @can('viewFinancialReport')
                                         <a href="{{ route('informes.financiero') }}" class="block rounded-xl px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-blue-700">
-                                            <span class="block font-medium">Informe de Pagos</span>
+                                            <span class="block font-medium">Informe Financiero</span>
                                             <span class="mt-1 block text-xs text-slate-500">Resumen financiero y recaudaci&oacute;n.</span>
                                         </a>
                                     @endcan
 
-                                    <div class="rounded-xl px-4 py-3 text-sm text-slate-400">
-                                        <span class="block font-medium">Informe de Asistencia</span>
-                                        <span class="mt-1 block text-xs text-slate-400">Pr&oacute;ximamente disponible.</span>
-                                    </div>
+                                    @can('viewActiveClientsReport')
+                                        <a href="{{ route('informes.clientes_vigentes') }}" class="block rounded-xl px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-blue-700">
+                                            <span class="block font-medium">Clientes Vigentes</span>
+                                            <span class="mt-1 block text-xs text-slate-500">Listado de clientes activos con vigencia actual.</span>
+                                        </a>
+                                    @endcan
 
                                     @can('viewOverdueClientsReport')
                                         <a href="{{ route('informes.clientes_deudores') }}" class="block rounded-xl px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-blue-700">
-                                            <span class="block font-medium">Informe de Vencimientos</span>
+                                            <span class="block font-medium">Clientes Deudores</span>
                                             <span class="mt-1 block text-xs text-slate-500">Clientes activos con membres&iacute;a vencida.</span>
                                         </a>
                                     @endcan
@@ -159,13 +161,15 @@
                         <p class="px-2 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Informes</p>
 
                         @can('viewFinancialReport')
-                            <a href="{{ route('informes.financiero') }}" class="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-white">Informe de Pagos</a>
+                            <a href="{{ route('informes.financiero') }}" class="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-white">Informe Financiero</a>
                         @endcan
 
-                        <div class="rounded-xl px-4 py-3 text-sm text-slate-400">Informe de Asistencia - Pr&oacute;ximamente</div>
+                        @can('viewActiveClientsReport')
+                            <a href="{{ route('informes.clientes_vigentes') }}" class="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-white">Clientes Vigentes</a>
+                        @endcan
 
                         @can('viewOverdueClientsReport')
-                            <a href="{{ route('informes.clientes_deudores') }}" class="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-white">Informe de Vencimientos</a>
+                            <a href="{{ route('informes.clientes_deudores') }}" class="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-white">Clientes Deudores</a>
                         @endcan
                     </div>
                 @endif
