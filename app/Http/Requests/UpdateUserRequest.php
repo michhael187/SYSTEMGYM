@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\RolUsuario;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -23,7 +24,7 @@ class UpdateUserRequest extends FormRequest
         $usuario = $this->route('usuario');
 
         return [
-            'rol' => ['required', 'string', 'in:gerente,encargado'],
+            'rol' => ['required', 'string', Rule::in(RolUsuario::gestionablesValues())],
             'nombre' => ['required', 'string', 'max:255'],
             'apellido' => ['required', 'string', 'max:255'],
             'email' => [

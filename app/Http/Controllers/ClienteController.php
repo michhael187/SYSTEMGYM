@@ -6,7 +6,6 @@ use App\Http\Requests\BuscarClienteRequest;
 use App\Http\Requests\StoreClienteRequest;
 use App\Http\Requests\UpdateClienteRequest;
 use App\Models\Cliente;
-use App\Models\Membresia;
 use App\Services\ClienteService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -34,11 +33,7 @@ class ClienteController extends Controller
     {
         $this->authorize('create', Cliente::class);
 
-        $membresias = Membresia::where('activo', true)
-            ->orderBy('nombre_plan')
-            ->get();
-
-        return view('clientes.create', compact('membresias'));
+        return view('clientes.create');
     }
 
     /**
@@ -51,8 +46,10 @@ class ClienteController extends Controller
         $cliente = $this->clienteService->crearCliente($request->validated());
 
         return redirect()
-            ->route('clientes.edit', $cliente)
-            ->with('success', 'Cliente registrado correctamente.');
+            ->route('clientes.create')
+            ->with('success', 'Cliente registrado correctamente.')
+            ->with('cliente_creado_id', $cliente->id)
+            ->with('cliente_creado_nombre', $cliente->apellido . ', ' . $cliente->nombre);
     }
 
     /**
@@ -67,7 +64,9 @@ class ClienteController extends Controller
         $valor = $datosValidados['valor'];
 
         if ($tipoBusqueda === 'dni') {
-            $cliente = Cliente::where('dni', (int) $valor)->first();
+            $cliente = Cliente::query()
+                ->buscar($tipoBusqueda, $valor)
+                ->first();
 
             if (! $cliente) {
                 return redirect()
@@ -79,9 +78,9 @@ class ClienteController extends Controller
             return redirect()->route('clientes.edit', $cliente);
         }
 
-        $resultados = Cliente::where('apellido', 'like', '%' . $valor . '%')
-            ->orderBy('apellido')
-            ->orderBy('nombre')
+        $resultados = Cliente::query()
+            ->buscar($tipoBusqueda, $valor)
+            ->ordenadosPorNombre()
             ->get();
 
         if ($resultados->isEmpty()) {
@@ -101,7 +100,7 @@ class ClienteController extends Controller
      */
     public function edit(Cliente $cliente): View
     {
-        $this->authorize('update', Cliente::class);
+        $this->authorize('update', $cliente);
 
         return view('clientes.edit', compact('cliente'));
     }
@@ -111,7 +110,7 @@ class ClienteController extends Controller
      */
     public function update(UpdateClienteRequest $request, Cliente $cliente): RedirectResponse
     {
-        $this->authorize('update', Cliente::class);
+        $this->authorize('update', $cliente);
 
         $this->clienteService->actualizarCliente($cliente, $request->validated());
 

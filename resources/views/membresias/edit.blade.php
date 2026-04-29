@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Modificar Membresía
+            Modificar Membresia
         </h2>
     </x-slot>
 
@@ -53,7 +53,7 @@
                     </div>
 
                     <div>
-                        <label for="duracion_dias" class="block text-sm font-medium text-gray-700">Duración en días</label>
+                        <label for="duracion_dias" class="block text-sm font-medium text-gray-700">Duracion en dias</label>
                         <input
                             type="number"
                             name="duracion_dias"
@@ -81,14 +81,13 @@
                     </div>
                 </form>
 
-                
                 <hr class="my-6">
 
                 <div>
                     @if ($membresia->activo)
-                        <h3 class="mb-3 text-lg font-semibold text-gray-800">Baja lógica de la membresía</h3>
+                        <h3 class="mb-3 text-lg font-semibold text-gray-800">Baja logica de la membresia</h3>
                         <p class="mb-4 text-sm text-gray-600">
-                            Esta acción deja la membresía inactiva para nuevos pagos, pero conserva su historial.
+                            Esta accion deja la membresia inactiva para nuevos pagos, pero conserva su historial.
                         </p>
 
                         <form action="{{ route('membresias.baja', $membresia) }}" method="POST">
@@ -96,13 +95,13 @@
                             @method('PATCH')
 
                             <button type="submit" style="background:#b91c1c; color:white; padding:10px 16px; border-radius:6px;">
-                                Dar de Baja Membresía
+                                Dar de Baja Membresia
                             </button>
                         </form>
                     @else
-                        <h3 class="mb-3 text-lg font-semibold text-gray-800">Reactivar membresía</h3>
+                        <h3 class="mb-3 text-lg font-semibold text-gray-800">Reactivar membresia</h3>
                         <p class="mb-4 text-sm text-gray-600">
-                            Esta acción vuelve a dejar disponible la membresía para nuevos pagos.
+                            Esta accion vuelve a dejar disponible la membresia para nuevos pagos.
                         </p>
 
                         <form action="{{ route('membresias.reactivar', $membresia) }}" method="POST">
@@ -110,12 +109,11 @@
                             @method('PATCH')
 
                             <button type="submit" style="background:#15803d; color:white; padding:10px 16px; border-radius:6px;">
-                                Reactivar Membresía
+                                Reactivar Membresia
                             </button>
                         </form>
                     @endif
                 </div>
-
             </div>
         </div>
     </div>

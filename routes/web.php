@@ -3,6 +3,7 @@ use App\Http\Controllers\InformeController;
 use App\Http\Controllers\MembresiaController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\SetupController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -10,6 +11,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/setup', [SetupController::class, 'index'])
+    ->name('setup.index');
+
+Route::post('/setup', [SetupController::class, 'store'])
+    ->name('setup.store');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

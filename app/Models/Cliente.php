@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -44,5 +45,27 @@ class Cliente extends Model
     public function pagos()
     {
         return $this->hasMany(Pago::class);
+    }
+
+    /**
+     * Aplica el filtro de busqueda segun el tipo y valor ingresado.
+     */
+    public function scopeBuscar(Builder $query, string $tipoBusqueda, string $valor): Builder
+    {
+        return match ($tipoBusqueda) {
+            'dni' => $query->where('dni', (int) $valor),
+            'apellido' => $query->where('apellido', 'like', '%' . $valor . '%'),
+            default => $query,
+        };
+    }
+
+    /**
+     * Aplica el orden estandar utilizado en el listado de clientes.
+     */
+    public function scopeOrdenadosPorNombre(Builder $query): Builder
+    {
+        return $query
+            ->orderBy('apellido')
+            ->orderBy('nombre');
     }
 }

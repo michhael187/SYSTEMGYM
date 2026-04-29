@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\RolUsuario;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreUserRequest extends FormRequest
 {
@@ -21,7 +23,7 @@ class StoreUserRequest extends FormRequest
     {
         return [
             // Solo se permiten los roles operativos definidos para esta etapa.
-            'rol' => ['required', 'string', 'in:gerente,encargado'],
+            'rol' => ['required', 'string', Rule::in(RolUsuario::gestionablesValues())],
 
             // El DNI identifica al usuario y no debe repetirse.
             'dni' => ['required', 'integer', 'unique:usuarios,dni'],

@@ -41,7 +41,7 @@
                     </div>
 
                     <div>
-                        <label for="valor" class="block text-sm font-medium text-gray-700">Valor de búsqueda</label>
+                        <label for="valor" class="block text-sm font-medium text-gray-700">Valor de busqueda</label>
                         <input
                             type="text"
                             name="valor"

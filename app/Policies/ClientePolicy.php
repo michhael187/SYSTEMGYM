@@ -2,20 +2,26 @@
 
 namespace App\Policies;
 
+use App\Enums\RolUsuario;
+use App\Models\Cliente;
 use App\Models\User;
 
 class ClientePolicy
 {
     /**
+     * Determina si el usuario puede operar el modulo de clientes.
+     */
+    private function puedeGestionarClientes(User $user): bool
+    {
+        return $user->estado && in_array($user->rol, RolUsuario::operativosValues(), true);
+    }
+
+    /**
      * Usuarios activos habilitados para operar clientes.
      */
     public function viewAny(User $user): bool
     {
-        return $user->estado && in_array($user->rol, [
-            'administrador',
-            'gerente',
-            'encargado',
-        ], true);
+        return $this->puedeGestionarClientes($user);
     }
 
     /**
@@ -23,14 +29,14 @@ class ClientePolicy
      */
     public function create(User $user): bool
     {
-        return $this->viewAny($user);
+        return $this->puedeGestionarClientes($user);
     }
 
     /**
      * Usuarios activos habilitados para edicion de clientes.
      */
-    public function update(User $user): bool
+    public function update(User $user, ?Cliente $cliente = null): bool
     {
-        return $this->viewAny($user);
+        return $this->puedeGestionarClientes($user);
     }
 }

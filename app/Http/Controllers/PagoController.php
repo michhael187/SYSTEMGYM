@@ -29,9 +29,18 @@ class PagoController extends Controller
             ->get();
 
         $datosValidados = $request->validated();
+        $clientePreseleccionado = null;
         $tipoBusqueda = $datosValidados['tipo_busqueda'] ?? 'dni';
         $valorBusqueda = $datosValidados['valor_busqueda'] ?? '';
         $clientes = collect();
+
+        if (isset($datosValidados['cliente_id'])) {
+            $clientePreseleccionado = Cliente::find($datosValidados['cliente_id']);
+
+            if ($clientePreseleccionado) {
+                $clientes = collect([$clientePreseleccionado]);
+            }
+        }
 
         if ($valorBusqueda !== '') {
             $query = Cliente::orderBy('apellido')
@@ -49,6 +58,7 @@ class PagoController extends Controller
         return view('pagos.create', compact(
             'membresias',
             'clientes',
+            'clientePreseleccionado',
             'tipoBusqueda',
             'valorBusqueda'
         ));

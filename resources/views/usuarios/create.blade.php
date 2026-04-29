@@ -38,8 +38,8 @@
                         <label for="rol" class="block text-sm font-medium text-gray-700">Rol</label>
                         <select name="rol" id="rol" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                             <option value="">Seleccione un rol</option>
-                            <option value="gerente" {{ old('rol') === 'gerente' ? 'selected' : '' }}>Gerente</option>
-                            <option value="encargado" {{ old('rol') === 'encargado' ? 'selected' : '' }}>Encargado</option>
+                            <option value="{{ \App\Enums\RolUsuario::GERENTE->value }}" {{ old('rol') === \App\Enums\RolUsuario::GERENTE->value ? 'selected' : '' }}>Gerente</option>
+                            <option value="{{ \App\Enums\RolUsuario::ENCARGADO->value }}" {{ old('rol') === \App\Enums\RolUsuario::ENCARGADO->value ? 'selected' : '' }}>Encargado</option>
                         </select>
                     </div>
 

@@ -42,7 +42,7 @@
                         </div>
 
                         <div>
-                            <label for="valor_busqueda" class="block text-sm font-medium text-gray-700">Valor de búsqueda</label>
+                            <label for="valor_busqueda" class="block text-sm font-medium text-gray-700">Valor de busqueda</label>
                             <input
                                 type="text"
                                 name="valor_busqueda"
@@ -60,33 +60,24 @@
                         </div>
                     </form>
 
-                    @if ($valorBusqueda !== '')
+                    @if ($clientePreseleccionado && $valorBusqueda === '')
+                        <div class="mt-6 rounded-md border border-blue-200 bg-blue-50 px-4 py-3 text-blue-800">
+                            <p class="font-semibold">Cliente preseleccionado para registrar el primer pago.</p>
+                            <p class="mt-1 text-sm">
+                                {{ $clientePreseleccionado->apellido }}, {{ $clientePreseleccionado->nombre }} - DNI: {{ $clientePreseleccionado->dni }}
+                            </p>
+                        </div>
+                    @elseif ($valorBusqueda !== '')
                         <div class="mt-6">
                             <h4 class="mb-3 text-md font-semibold text-gray-800">Resultados</h4>
 
                             @if ($clientes->isEmpty())
                                 <div class="rounded-md bg-yellow-100 px-4 py-3 text-yellow-800">
-                                    No se encontraron clientes con ese criterio de búsqueda.
+                                    No se encontraron clientes con ese criterio de busqueda.
                                 </div>
                             @else
-                                <div class="space-y-3">
-                                    @foreach ($clientes as $cliente)
-                                        <label class="block rounded-md border border-gray-200 px-4 py-3">
-                                            <input
-                                                type="radio"
-                                                name="cliente_id_seleccionado"
-                                                value="{{ $cliente->id }}"
-                                                form="form-registrar-pago"
-                                                {{ old('cliente_id') == $cliente->id ? 'checked' : '' }}
-                                            >
-                                            <span class="ml-2 font-semibold text-gray-800">
-                                                {{ $cliente->apellido }}, {{ $cliente->nombre }}
-                                            </span>
-                                            <span class="block text-sm text-gray-600 ml-6">
-                                                DNI: {{ $cliente->dni }}
-                                            </span>
-                                        </label>
-                                    @endforeach
+                                <div class="rounded-md border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700">
+                                    Se encontraron {{ $clientes->count() }} cliente(s). Seleccionalo en el formulario de pago.
                                 </div>
                             @endif
                         </div>
@@ -96,16 +87,30 @@
                 <form id="form-registrar-pago" action="{{ route('pagos.store') }}" method="POST" class="space-y-4">
                     @csrf
 
-                    <input type="hidden" name="cliente_id" value="{{ old('cliente_id') }}">
+                    <div>
+                        <label for="cliente_id" class="block text-sm font-medium text-gray-700">Cliente</label>
+                        <select
+                            name="cliente_id"
+                            id="cliente_id"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                        >
+                            <option value="">Seleccione un cliente</option>
+                            @foreach ($clientes as $cliente)
+                                <option value="{{ $cliente->id }}" {{ old('cliente_id', $clientePreseleccionado?->id) == $cliente->id ? 'selected' : '' }}>
+                                    {{ $cliente->apellido }}, {{ $cliente->nombre }} - DNI: {{ $cliente->dni }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
                     <div>
-                        <label for="membresia_id" class="block text-sm font-medium text-gray-700">Membresía</label>
+                        <label for="membresia_id" class="block text-sm font-medium text-gray-700">Membresia</label>
                         <select
                             name="membresia_id"
                             id="membresia_id"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                         >
-                            <option value="">Seleccione una membresía</option>
+                            <option value="">Seleccione una membresia</option>
                             @foreach ($membresias as $membresia)
                                 <option value="{{ $membresia->id }}" {{ old('membresia_id') == $membresia->id ? 'selected' : '' }}>
                                     {{ $membresia->nombre_plan }}
@@ -134,17 +139,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const radios = document.querySelectorAll('input[name="cliente_id_seleccionado"]');
-            const hiddenClienteId = document.querySelector('input[name="cliente_id"]');
-
-            radios.forEach(radio => {
-                radio.addEventListener('change', function () {
-                    hiddenClienteId.value = this.value;
-                });
-            });
-        });
-    </script>
 </x-app-layout>

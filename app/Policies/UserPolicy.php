@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\RolUsuario;
 use App\Models\User;
 
 class UserPolicy
@@ -11,7 +12,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->rol === 'administrador' && $user->estado;
+        return $user->rol === RolUsuario::ADMINISTRADOR->value && $user->estado;
     }
 
     /**
@@ -27,6 +28,14 @@ class UserPolicy
      */
     public function update(User $user, ?User $targetUser = null): bool
     {
-        return $this->viewAny($user);
+        if (! $this->viewAny($user)) {
+            return false;
+        }
+
+        if ($targetUser && $user->is($targetUser)) {
+            return false;
+        }
+
+        return true;
     }
 }

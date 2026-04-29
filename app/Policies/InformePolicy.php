@@ -2,10 +2,19 @@
 
 namespace App\Policies;
 
+use App\Enums\RolUsuario;
 use App\Models\User;
 
 class InformePolicy
 {
+    /**
+     * Determina si el usuario puede ver informes operativos de clientes.
+     */
+    private function puedeVerInformesDeClientes(User $user): bool
+    {
+        return $user->estado && in_array($user->rol, RolUsuario::operativosValues(), true);
+    }
+
     /**
      * Solo usuarios activos con permiso financiero pueden ver el informe financiero.
      */
@@ -19,11 +28,7 @@ class InformePolicy
      */
     public function viewActiveClients(User $user): bool
     {
-        return $user->estado && in_array($user->rol, [
-            'administrador',
-            'gerente',
-            'encargado',
-        ]);
+        return $this->puedeVerInformesDeClientes($user);
     }
 
     /**
@@ -31,10 +36,6 @@ class InformePolicy
      */
     public function viewOverdueClients(User $user): bool
     {
-        return $user->estado && in_array($user->rol, [
-            'administrador',
-            'gerente',
-            'encargado',
-        ]);
+        return $this->puedeVerInformesDeClientes($user);
     }
 }

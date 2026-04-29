@@ -2,10 +2,29 @@
 
 namespace App\Services;
 
+use App\Enums\RolUsuario;
 use App\Models\User;
 
 class UsuarioService
 {
+    /**
+     * Crea el primer administrador del sistema durante el setup inicial.
+     */
+    public function crearAdministradorInicial(array $datos): User
+    {
+        return User::create([
+            'rol' => RolUsuario::ADMINISTRADOR->value,
+            'dni' => $datos['dni'],
+            'nombre' => $datos['nombre'],
+            'apellido' => $datos['apellido'],
+            'email' => $datos['email'],
+            'password' => $datos['password'],
+            'password_cambiado' => true,
+            'autorizado_financiero' => true,
+            'estado' => true,
+        ]);
+    }
+
     /**
      * Crea un nuevo usuario del sistema.
      */
@@ -31,7 +50,7 @@ class UsuarioService
      */
     private function determinarAutorizacionFinanciera(string $rol): bool
     {
-        return $rol === 'gerente';
+        return RolUsuario::tryFrom($rol) === RolUsuario::GERENTE;
     }
 
     /**
