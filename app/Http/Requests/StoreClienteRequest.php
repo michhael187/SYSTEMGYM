@@ -23,7 +23,7 @@ class StoreClienteRequest extends FormRequest
             'dni' => ['required', 'integer', 'unique:clientes,dni'],
             'nombre' => ['required', 'string', 'max:255'],
             'apellido' => ['required', 'string', 'max:255'],
-            'telefono' => ['nullable', 'string', 'max:255'],
+            'telefono' => ['required', 'string', 'max:255'],
             'peso' => ['nullable', 'numeric', 'between:0,999.99'],
             'altura' => ['nullable', 'numeric', 'between:0,999.99'],
             'observaciones' => ['nullable', 'string'],

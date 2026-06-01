@@ -44,85 +44,92 @@
                     @csrf
 
                     <div>
-                        <label for="dni" class="block text-sm font-medium text-gray-700">DNI</label>
+                        <label for="dni" class="block text-sm font-medium text-gray-700">DNI <span class="text-red-600">*</span></label>
                         <input
                             type="number"
                             name="dni"
                             id="dni"
                             value="{{ old('dni') }}"
+                            placeholder="Ej: 35123456"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                         >
                     </div>
 
                     <div>
-                        <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
+                        <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre <span class="text-red-600">*</span></label>
                         <input
                             type="text"
                             name="nombre"
                             id="nombre"
                             value="{{ old('nombre') }}"
+                            placeholder="Ej: Juan"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                         >
                     </div>
 
                     <div>
-                        <label for="apellido" class="block text-sm font-medium text-gray-700">Apellido</label>
+                        <label for="apellido" class="block text-sm font-medium text-gray-700">Apellido <span class="text-red-600">*</span></label>
                         <input
                             type="text"
                             name="apellido"
                             id="apellido"
                             value="{{ old('apellido') }}"
+                            placeholder="Ej: Pérez"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                         >
                     </div>
 
                     <div>
-                        <label for="telefono" class="block text-sm font-medium text-gray-700">Telefono</label>
+                        <label for="telefono" class="block text-sm font-medium text-gray-700">Telefono <span class="text-red-600">*</span></label>
                         <input
-                            type="text"
+                            type="number"
                             name="telefono"
                             id="telefono"
                             value="{{ old('telefono') }}"
+                            required
+                            placeholder="Ej: 2902456789"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                         >
                     </div>
 
                     <div>
-                        <label for="peso" class="block text-sm font-medium text-gray-700">Peso</label>
+                        <label for="peso" class="block text-sm font-medium text-gray-700">Peso (kg) (Opcional)</label>
                         <input
                             type="number"
-                            step="0.01"
+                            step="0.1"
                             name="peso"
                             id="peso"
                             value="{{ old('peso') }}"
+                            placeholder="Ej: 75.5"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                         >
                     </div>
 
                     <div>
-                        <label for="altura" class="block text-sm font-medium text-gray-700">Altura</label>
+                        <label for="altura" class="block text-sm font-medium text-gray-700">Altura (cm) (Opcional)</label>
                         <input
                             type="number"
-                            step="0.01"
                             name="altura"
                             id="altura"
                             value="{{ old('altura') }}"
+                            placeholder="Ej: 175"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                         >
                     </div>
 
                     <div>
-                        <label for="observaciones" class="block text-sm font-medium text-gray-700">Observaciones</label>
+                        <label for="observaciones" class="block text-sm font-medium text-gray-700">Observaciones (Opcional)</label>
                         <textarea
                             name="observaciones"
                             id="observaciones"
                             rows="4"
+                            placeholder="Ej: Lesión previa en rodilla derecha / Ninguna."
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                         >{{ old('observaciones') }}</textarea>
                     </div>
 
                     <div>
-                        <label for="estado" class="block text-sm font-medium text-gray-700">Estado</label>
+                        <label for="estado" class="block text-sm font-medium text-gray-700">Estado <span class="text-red-600">*</span></label>
                         <select name="estado" id="estado" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                             <option value="1" {{ old('estado', '1') === '1' ? 'selected' : '' }}>Activo</option>
                             <option value="0" {{ old('estado') === '0' ? 'selected' : '' }}>Inactivo</option>
