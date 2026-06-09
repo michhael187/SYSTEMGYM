@@ -188,7 +188,7 @@
                         <span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">Análisis</span>
                     </div>
                     <p class="mt-3 text-sm leading-relaxed text-slate-500">
-                        Visualiza el estado financiero del gimnasio y haz seguimiento de la asistencia y pagos de los clientes.
+                        Visualiza el estado financiero del gimnasio y haz un seguimiento de la asistencia y pagos de los clientes.
                     </p>
                     <div class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                         @can('viewActiveClientsReport')
