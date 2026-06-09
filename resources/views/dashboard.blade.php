@@ -30,7 +30,7 @@
                         {{ auth()->user()->nombre }} {{ auth()->user()->apellido }}
                     </h2>
                     <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
-                        Resumen operativo de hoy
+                        Resumen de Actividad
                     </p>
 
                     <div class="mt-5 flex flex-wrap gap-3">

@@ -21,7 +21,7 @@ class BuscarPagoClienteRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'tipo_busqueda' => $this->input('tipo_busqueda', 'dni'),
+            'tipo_busqueda' => $this->input('tipo_busqueda', 'apellido'),
             'valor_busqueda' => trim((string) $this->input('valor_busqueda', '')),
         ]);
     }
