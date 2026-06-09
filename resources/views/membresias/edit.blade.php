@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Modificar Membresia
+            Editar Membresía
         </h2>
     </x-slot>
 
@@ -30,35 +30,38 @@
                     @method('PUT')
 
                     <div>
-                        <label for="nombre_plan" class="block text-sm font-medium text-gray-700">Nombre del plan</label>
+                        <label for="nombre_plan" class="block text-sm font-medium text-gray-700">Nombre del plan <span class="text-red-600">*</span></label>
                         <input
                             type="text"
                             name="nombre_plan"
                             id="nombre_plan"
                             value="{{ old('nombre_plan', $membresia->nombre_plan) }}"
+                            required
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                         >
                     </div>
 
                     <div>
-                        <label for="precio" class="block text-sm font-medium text-gray-700">Precio</label>
+                        <label for="precio" class="block text-sm font-medium text-gray-700">Precio <span class="text-red-600">*</span></label>
                         <input
                             type="number"
                             step="0.01"
                             name="precio"
                             id="precio"
                             value="{{ old('precio', $membresia->precio) }}"
+                            required
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                         >
                     </div>
 
                     <div>
-                        <label for="duracion_dias" class="block text-sm font-medium text-gray-700">Duracion en dias</label>
+                        <label for="duracion_dias" class="block text-sm font-medium text-gray-700">Duración en días <span class="text-red-600">*</span></label>
                         <input
                             type="number"
                             name="duracion_dias"
                             id="duracion_dias"
                             value="{{ old('duracion_dias', $membresia->duracion_dias) }}"
+                            required
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                         >
                     </div>

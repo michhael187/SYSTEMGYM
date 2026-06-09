@@ -34,7 +34,6 @@ class UpdateUserRequest extends FormRequest
                 'max:255',
                 Rule::unique('usuarios', 'email')->ignore($usuario->id),
             ],
-            'estado' => ['required', 'boolean'],
         ];
     }
 }

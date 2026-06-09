@@ -19,7 +19,7 @@
                         </a>
 
                         @can('viewAny', App\Models\Cliente::class)
-                            <a href="{{ route('clientes.buscar.form') }}" class="{{ request()->routeIs('clientes.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }} rounded-xl px-4 py-2 text-sm font-medium transition">
+                            <a href="{{ route('clientes.index') }}" class="{{ request()->routeIs('clientes.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }} rounded-xl px-4 py-2 text-sm font-medium transition">
                                 Clientes
                             </a>
                         @endcan
@@ -145,7 +145,7 @@
                 <a href="{{ route('dashboard') }}" class="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100">Inicio</a>
 
                 @can('viewAny', App\Models\Cliente::class)
-                    <a href="{{ route('clientes.buscar.form') }}" class="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100">Clientes</a>
+                    <a href="{{ route('clientes.index') }}" class="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100">Clientes</a>
                 @endcan
 
                 @can('create', App\Models\Pago::class)
