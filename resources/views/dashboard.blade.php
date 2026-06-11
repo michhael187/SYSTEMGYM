@@ -86,130 +86,146 @@
         </div>
     </section>
 
-    <div class="w-full bg-slate-100 py-10 min-h-screen">
+    <div class="w-full bg-slate-100/80 py-12 min-h-screen">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <section class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <section class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                 
                 @can('update', App\Models\User::class)
-                    <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                        <div class="flex items-start justify-between gap-3">
-                            <div>
-                                <p class="text-xs font-bold uppercase tracking-wider text-blue-600">Sistema</p>
-                                <h3 class="mt-1.5 text-lg font-semibold text-slate-900">Gestión de Usuarios</h3>
+                    <div class="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+                        <div>
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                </div>
+                                <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600 uppercase tracking-wider">Accesos</span>
                             </div>
-                            <span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">Accesos</span>
+                            <h3 class="mt-4 text-lg font-bold text-slate-900">Gestión de Usuarios</h3>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-500">
+                                Controlá las cuentas de acceso de tu personal y administrá los permisos del sistema.
+                            </p>
                         </div>
-                        <p class="mt-3 text-sm leading-relaxed text-slate-500">
-                            Administra los accesos al sistema. Crea cuentas para tu personal y controla sus permisos.
-                        </p>
-                        <div class="mt-5 space-y-2.5">
-                            <a href="{{ route('usuarios.create') }}" class="block rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 text-center transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
-                                Nuevo usuario
+                        
+                        <div class="mt-6 grid grid-cols-2 gap-3">
+                            <a href="{{ route('usuarios.create') }}" class="inline-flex items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-slate-800">
+                                ➕ Nuevo
                             </a>
-                            <a href="{{ route('usuarios.index') }}" class="block rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 text-center transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
-                                Gestionar usuarios
+                            <a href="{{ route('usuarios.index') }}" class="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">
+                                📁 Gestionar
                             </a>
                         </div>
-                    </article>
+                    </div>
                 @endcan
 
                 @can('viewAny', App\Models\Cliente::class)
-                    <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                        <div class="flex items-start justify-between gap-3">
-                            <div>
-                                <p class="text-xs font-bold uppercase tracking-wider text-blue-600">Recepción</p>
-                                <h3 class="mt-1.5 text-lg font-semibold text-slate-900">Gestión de Clientes</h3>
+                    <div class="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+                        <div>
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>
+                                </div>
+                                <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600 uppercase tracking-wider">Socios</span>
                             </div>
-                            <span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">Socios</span>
+                            <h3 class="mt-4 text-lg font-bold text-slate-900">Gestión de Clientes</h3>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-500">
+                                Registrá nuevos socios, actualizá sus datos médicos, membresías y revisá el historial.
+                            </p>
                         </div>
-                        <p class="mt-3 text-sm leading-relaxed text-slate-500">
-                            Registra a los socios del gimnasio, mantén su información actualizada y revisa su historial.
-                        </p>
-                        <div class="mt-5 space-y-2.5">
-                            <a href="{{ route('clientes.create') }}" class="block rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 text-center transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
-                                Nuevo cliente
+                        
+                        <div class="mt-6 grid grid-cols-2 gap-3">
+                            <a href="{{ route('clientes.create') }}" class="inline-flex items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-slate-800">
+                                ➕ Nuevo
                             </a>
-                            <a href="{{ route('clientes.index') }}" class="block rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 text-center transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
-                                Gestionar clientes
+                            <a href="{{ route('clientes.index') }}" class="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">
+                                📁 Gestionar
                             </a>
                         </div>
-                    </article>
+                    </div>
                 @endcan
 
                 @can('create', App\Models\Membresia::class)
-                    <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                        <div class="flex items-start justify-between gap-3">
-                            <div>
-                                <p class="text-xs font-bold uppercase tracking-wider text-blue-600">Comercial</p>
-                                <h3 class="mt-1.5 text-lg font-semibold text-slate-900">Administrar Planes</h3>
+                    <div class="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+                        <div>
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" /></svg>
+                                </div>
+                                <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600 uppercase tracking-wider">Planes</span>
                             </div>
-                            <span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">Planes</span>
+                            <h3 class="mt-4 text-lg font-bold text-slate-900">Planes y Membresías</h3>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-500">
+                                Configurá pases mensuales, semanales o pases diarios. Definí valores y vigencias.
+                            </p>
                         </div>
-                        <p class="mt-3 text-sm leading-relaxed text-slate-500">
-                            Crea y configura los planes del gimnasio. Define tarifas, duraciones y controla su disponibilidad.
-                        </p>
-                        <div class="mt-5 space-y-2.5">
-                            <a href="{{ route('membresias.create') }}" class="block rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 text-center transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
-                                Nueva membresía
+                        
+                        <div class="mt-6 grid grid-cols-2 gap-3">
+                            <a href="{{ route('membresias.create') }}" class="inline-flex items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-slate-800">
+                                ➕ Nuevo Plan
                             </a>
-                            <a href="{{ route('membresias.index') }}" class="block rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 text-center transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
-                                Gestionar membresías
+                            <a href="{{ route('membresias.index') }}" class="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">
+                                📁 Gestionar
                             </a>
                         </div>
-                    </article>
+                    </div>
                 @endcan
 
                 @can('create', App\Models\Pago::class)
-                    <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                        <div class="flex items-start justify-between gap-3">
-                            <div>
-                                <p class="text-xs font-bold uppercase tracking-wider text-blue-600">Caja</p>
-                                <h3 class="mt-1.5 text-lg font-semibold text-slate-900">Registrar Pago</h3>
+                    <div class="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+                        <div>
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5h16.5m-18 0A2.25 2.25 0 003.75 6.75v9.375c0 .496.4.9.9.9h16.2c.496 0 .9-.4.9-.9V6.75a2.25 2.25 0 00-2.25-2.25M3.75 12h16.5m-13.5-3h.008v.008H6.75V9zm0 6h.008v.008H6.75V15m3-6h.008v.008h-.008V9zm0 6h.008v.008h-.008V15m3-6h.008v.008h-.008V9zm0 6h.008v.008h-.008V15m3-6h.008v.008h-.008V9zm0 6h.008v.008h-.008V15" /></svg>
+                                </div>
+                                <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600 uppercase tracking-wider">Ingresos</span>
                             </div>
-                            <span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">Ingresos</span>
+                            <h3 class="mt-4 text-lg font-bold text-slate-900">Registrar Cobro</h3>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-500">
+                                Procesá los pagos de cuotas de tus clientes de forma inmediata y emití el comprobante.
+                            </p>
                         </div>
-                        <p class="mt-3 text-sm leading-relaxed text-slate-500">
-                            Registra los pagos de los clientes para mantener sus membresías al día.
-                        </p>
-                        <div class="mt-5">
-                            <a href="{{ route('pagos.create') }}" class="block w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 text-center transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
-                                Nuevo Cobro
+                        
+                        <div class="mt-6">
+                            <a href="{{ route('pagos.create') }}" class="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-blue-500">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                                Registrar Nuevo Pago
                             </a>
                         </div>
-                    </article>
+                    </div>
                 @endcan
 
-                <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:col-span-2 xl:col-span-2">
-                    <div class="flex items-start justify-between gap-3">
-                        <div>
-                            <p class="text-xs font-bold uppercase tracking-wider text-blue-600">Gerencia</p>
-                            <h3 class="mt-1.5 text-lg font-semibold text-slate-900">Reportes y Estadísticas</h3>
+                <div class="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md md:col-span-2 xl:col-span-2">
+                    <div>
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0v11.25m0 0h16.5m0 0h1.5m-1.5 0V3m0 0h-1.5m1.5 0v11.25M16.5 9.75v1.5m-3-3.75v5.25m-3-2.25v3" /></svg>
+                            </div>
+                            <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600 uppercase tracking-wider">Auditoría</span>
                         </div>
-                        <span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">Análisis</span>
+                        <h3 class="mt-4 text-lg font-bold text-slate-900">Reportes y Estadísticas del Negocio</h3>
+                        <p class="mt-2 text-sm leading-relaxed text-slate-500">
+                            Analizá el estado financiero del gimnasio, controlá las deudas de los socios y exportá listados consolidados en PDF.
+                        </p>
                     </div>
-                    <p class="mt-3 text-sm leading-relaxed text-slate-500">
-                        Visualiza el estado financiero del gimnasio y haz un seguimiento de la asistencia y pagos de los clientes.
-                    </p>
-                    <div class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                    
+                    <div class="mt-6 grid gap-3 sm:grid-cols-3">
                         @can('viewActiveClientsReport')
-                            <a href="{{ route('informes.clientes_vigentes') }}" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 text-center transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
-                                Reporte de Socios Vigentes
+                            <a href="{{ route('informes.clientes_vigentes') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">
+                                👥 Socios Vigentes
                             </a>
                         @endcan
 
                         @can('viewOverdueClientsReport')
-                            <a href="{{ route('informes.clientes_deudores') }}" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 text-center transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
-                                Reporte de Socios Deudores
+                            <a href="{{ route('informes.clientes_deudores') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">
+                                🚨 Socios Deudores
                             </a>
                         @endcan
 
                         @can('viewFinancialReport')
-                            <a href="{{ route('informes.financiero') }}" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 text-center transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
-                                Reporte Financiero
+                            <a href="{{ route('informes.financiero') }}" class="inline-flex items-center justify-center rounded-xl border border-blue-200 bg-blue-50/50 px-3 py-2.5 text-xs font-bold text-blue-700 shadow-sm transition hover:bg-blue-100/70">
+                                💰 Balance Financiero
                             </a>
                         @endcan
                     </div>
-                </article>
+                </div>
 
             </section>
         </div>
