@@ -25,4 +25,26 @@ class StorePagoRequest extends FormRequest
             'fecha_pago' => ['required', 'date'],
         ];
     }
+
+    /**
+     * Mensajes de error personalizados y amigables.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            // Errores para el Cliente
+            'cliente_id.required' => 'Debes seleccionar un cliente de la lista antes de cobrar.',
+            'cliente_id.exists' => 'El cliente seleccionado no es válido o fue eliminado.',
+
+            // Errores para la Membresía
+            'membresia_id.required' => 'Por favor, elige qué plan o membresía estás cobrando.',
+            'membresia_id.exists' => 'El plan seleccionado no se encuentra en el sistema.',
+
+            // Errores para la Fecha
+            'fecha_pago.required' => 'La fecha y hora del pago son obligatorias.',
+            'fecha_pago.date' => 'El formato de la fecha ingresada no es correcto.',
+        ];
+    }
 }

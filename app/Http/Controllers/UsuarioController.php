@@ -59,16 +59,6 @@ class UsuarioController extends Controller
             ->with('success', 'Usuario creado correctamente.');
     }
 
-        /**
-     * Muestra el formulario de reactivacion de usuario.
-     */
-    public function showReactivarForm(): View
-    {
-        $this->authorize('update', User::class);
-
-        return view('usuarios.reactivar');
-    }
-
     /**
      * Procesa la reactivacion de un usuario existente.
      */
@@ -80,15 +70,15 @@ class UsuarioController extends Controller
 
         return match ($resultado['accion']) {
             'reactivado' => redirect()
-                ->route('usuarios.reactivar.form')
+                ->route('usuarios.index')
                 ->with('success', 'Usuario reactivado correctamente.'),
 
             'ya_activo' => redirect()
-                ->route('usuarios.reactivar.form')
+                ->route('usuarios.index')
                 ->with('warning', 'El usuario ya se encuentra activo.'),
 
             'no_encontrado' => redirect()
-                ->route('usuarios.reactivar.form')
+                ->route('usuarios.index')
                 ->with('warning', 'No se encontro un usuario con ese DNI.'),
         };
     }

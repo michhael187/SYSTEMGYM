@@ -60,6 +60,22 @@ class Cliente extends Model
     }
 
     /**
+     * Aplica un filtro de busqueda simple sobre campos operativos del cliente.
+     */
+    public function scopeBuscarTexto(Builder $query, string $busqueda): Builder
+    {
+        if ($busqueda === '') {
+            return $query;
+        }
+
+        return $query->where(function (Builder $subQuery) use ($busqueda): void {
+            $subQuery->where('nombre', 'like', '%' . $busqueda . '%')
+                ->orWhere('apellido', 'like', '%' . $busqueda . '%')
+                ->orWhere('dni', 'like', '%' . $busqueda . '%');
+        });
+    }
+
+    /**
      * Aplica el orden estandar utilizado en el listado de clientes.
      */
     public function scopeOrdenadosPorNombre(Builder $query): Builder

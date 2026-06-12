@@ -30,7 +30,9 @@ class PagoController extends Controller
 
         $datosValidados = $request->validated();
         $clientePreseleccionado = null;
-        $tipoBusqueda = $datosValidados['tipo_busqueda'] ?? 'dni';
+        
+        // EL CAMBIO ESTÁ AQUÍ: Reemplazamos 'dni' por 'apellido'
+        $tipoBusqueda = $datosValidados['tipo_busqueda'] ?? 'apellido';
         $valorBusqueda = $datosValidados['valor_busqueda'] ?? '';
         $clientes = collect();
 

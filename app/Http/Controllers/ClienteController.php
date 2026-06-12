@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateClienteRequest;
 use App\Models\Cliente;
 use App\Services\ClienteService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ClienteController extends Controller
@@ -17,13 +18,32 @@ class ClienteController extends Controller
     }
 
     /**
-     * Muestra el formulario para buscar un cliente por DNI.
+     * Muestra el listado principal de clientes con buscador integrado.
      */
-    public function buscarForm(): View
+    public function index(Request $request): View
     {
         $this->authorize('viewAny', Cliente::class);
 
-        return view('clientes.buscar');
+        $busqueda = trim((string) $request->query('buscar', ''));
+
+        $clientes = Cliente::query()
+            ->with('membresiaActual')
+            ->buscarTexto($busqueda)
+            ->ordenadosPorNombre()
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('clientes.index', compact('clientes', 'busqueda'));
+    }
+
+    /**
+     * Mantiene compatibilidad con la ruta anterior y redirige al listado principal.
+     */
+    public function buscarForm(): RedirectResponse
+    {
+        $this->authorize('viewAny', Cliente::class);
+
+        return redirect()->route('clientes.index');
     }
 
     /**
@@ -70,7 +90,7 @@ class ClienteController extends Controller
 
             if (! $cliente) {
                 return redirect()
-                    ->route('clientes.buscar.form')
+                    ->route('clientes.index')
                     ->withInput()
                     ->with('warning', 'No se encontro un cliente con ese DNI.');
             }
@@ -85,14 +105,14 @@ class ClienteController extends Controller
 
         if ($resultados->isEmpty()) {
             return redirect()
-                ->route('clientes.buscar.form')
+                ->route('clientes.index')
                 ->withInput()
                 ->with('warning', 'No se encontraron clientes con ese apellido.');
         }
 
-        return view('clientes.buscar', [
-            'resultados' => $resultados,
-        ]);
+        return redirect()
+            ->route('clientes.index', ['buscar' => $valor])
+            ->with('warning', 'Se encontraron clientes con ese criterio. Usa la tabla para abrir la ficha.');
     }
 
     /**

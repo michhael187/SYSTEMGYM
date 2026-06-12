@@ -98,7 +98,6 @@ class UsuarioService
             'apellido' => $datos['apellido'],
             'email' => $datos['email'],
             'autorizado_financiero' => $this->determinarAutorizacionFinanciera($datos['rol']),
-            'estado' => $datos['estado'],
         ]);
 
         return $usuario->fresh();
