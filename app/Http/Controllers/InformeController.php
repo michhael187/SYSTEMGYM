@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AccionAuditoria;
 use App\Http\Requests\InformeFinancieroRequest;
+use App\Services\AuditoriaService;
 use App\Services\InformeClientesService;
 use App\Services\InformeFinancieroService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -14,7 +16,8 @@ class InformeController extends Controller
 {
     public function __construct(
         private InformeFinancieroService $informeFinancieroService,
-        private InformeClientesService $informeClientesService
+        private InformeClientesService $informeClientesService,
+        private AuditoriaService $auditoriaService,
     ) {
     }
 
@@ -37,18 +40,26 @@ class InformeController extends Controller
     {
         $this->authorize('viewFinancialReport');
 
-        $filtros = $request->validated();
-        [$fechaDesde, $fechaHasta] = $this->informeFinancieroService->resolverRangoFechas($filtros);
-        $informe = $this->informeFinancieroService->generarInforme($filtros);
-
+        $informe = $this->informeFinancieroService->generarInforme($request->validated(), true);
         $nombreArchivo = sprintf(
-            'informe_financiero_%s_a_%s.pdf',
-            $fechaDesde->format('Ymd'),
-            $fechaHasta->format('Ymd')
+            'informe_financiero_%s_%s.pdf',
+            $informe['fecha_desde']->format('Ymd'),
+            $informe['fecha_hasta']->format('Ymd')
+        );
+
+        $this->auditoriaService->registrar(
+            operador: $request->user(),
+            accion: AccionAuditoria::DESCARGA_PDF,
+            modulo: 'documentos',
+            valoresNuevos: [
+                'documento' => 'informe_financiero',
+                'nombre_archivo' => $nombreArchivo,
+            ],
+            direccionIp: $request->ip(),
         );
 
         return Pdf::loadView('informes.financiero_pdf', $informe)
-            ->setPaper('a4')
+            ->setPaper('a4', 'landscape')
             ->download($nombreArchivo);
     }
 
@@ -74,11 +85,23 @@ class InformeController extends Controller
         $this->authorize('viewActiveClientsReport');
 
         $informe = $this->informeClientesService->generarInformeClientesVigentes(
-            $request->only(['sort_by', 'sort_direction'])
+            $request->only(['sort_by', 'sort_direction']),
+            true
         );
         $nombreArchivo = sprintf(
             'informe_clientes_vigentes_%s.pdf',
             $informe['fecha_referencia']->format('Ymd')
+        );
+
+        $this->auditoriaService->registrar(
+            operador: $request->user(),
+            accion: AccionAuditoria::DESCARGA_PDF,
+            modulo: 'documentos',
+            valoresNuevos: [
+                'documento' => 'informe_clientes_vigentes',
+                'nombre_archivo' => $nombreArchivo,
+            ],
+            direccionIp: $request->ip(),
         );
 
         return Pdf::loadView('informes.clientes_vigentes_pdf', $informe)
@@ -108,11 +131,23 @@ class InformeController extends Controller
         $this->authorize('viewOverdueClientsReport');
 
         $informe = $this->informeClientesService->generarInformeClientesDeudores(
-            $request->only(['sort_by', 'sort_direction'])
+            $request->only(['sort_by', 'sort_direction']),
+            true
         );
         $nombreArchivo = sprintf(
             'informe_clientes_deudores_%s.pdf',
             $informe['fecha_referencia']->format('Ymd')
+        );
+
+        $this->auditoriaService->registrar(
+            operador: $request->user(),
+            accion: AccionAuditoria::DESCARGA_PDF,
+            modulo: 'documentos',
+            valoresNuevos: [
+                'documento' => 'informe_clientes_deudores',
+                'nombre_archivo' => $nombreArchivo,
+            ],
+            direccionIp: $request->ip(),
         );
 
         return Pdf::loadView('informes.clientes_deudores_pdf', $informe)

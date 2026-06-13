@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\AccionAuditoria;
 use App\Models\Cliente;
 use App\Models\Membresia;
 use App\Models\Pago;
@@ -11,8 +12,10 @@ use Illuminate\Support\Facades\DB;
 
 class PagoService
 {
-    public function __construct(private VigenciaService $vigenciaService)
-    {
+    public function __construct(
+        private VigenciaService $vigenciaService,
+        private AuditoriaService $auditoriaService,
+    ) {
     }
 
     /**
@@ -42,6 +45,15 @@ class PagoService
                 'fecha_vencimiento' => $fechaFin->format('Y-m-d'),
                 'estado' => true,
             ]);
+
+            $this->auditoriaService->registrar(
+                operador: $usuario,
+                accion: AccionAuditoria::CREACION,
+                modulo: 'pagos',
+                auditable: $pago->fresh(),
+                valoresNuevos: $pago->fresh()->toArray(),
+                direccionIp: request()->ip(),
+            );
 
             return $pago->fresh();
         });

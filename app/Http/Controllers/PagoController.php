@@ -2,19 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AccionAuditoria;
 use App\Http\Requests\BuscarPagoClienteRequest;
 use App\Http\Requests\StorePagoRequest;
 use App\Models\Cliente;
 use App\Models\Membresia;
 use App\Models\Pago;
+use App\Services\AuditoriaService;
 use App\Services\PagoService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class PagoController extends Controller
 {
-    public function __construct(private PagoService $pagoService)
-    {
+    public function __construct(
+        private PagoService $pagoService,
+        private AuditoriaService $auditoriaService,
+    ) {
     }
 
     /**
@@ -81,5 +88,35 @@ class PagoController extends Controller
         return redirect()
             ->route('pagos.create')
             ->with('success', 'Pago registrado correctamente.');
+    }
+
+    /**
+     * Genera y descarga el comprobante PDF de un pago, registrando la operación en auditoría.
+     */
+    public function descargarComprobante(Request $request, Pago $pago): Response
+    {
+        $this->authorize('download', $pago);
+
+        $pago->load(['cliente', 'membresia', 'usuario']);
+
+        $nombreArchivo = sprintf('comprobante_pago_%s.pdf', $pago->id);
+
+        $this->auditoriaService->registrar(
+            operador: $request->user(),
+            accion: AccionAuditoria::DESCARGA_PDF,
+            modulo: 'pagos',
+            auditable: $pago,
+            valoresNuevos: [
+                'documento' => 'recibo_pago',
+                'pago_id' => $pago->id,
+                'cliente_id' => $pago->cliente_id,
+                'nombre_archivo' => $nombreArchivo,
+            ],
+            direccionIp: $request->ip(),
+        );
+
+        return Pdf::loadView('pagos.comprobante_pdf', compact('pago'))
+            ->setPaper('a4')
+            ->download($nombreArchivo);
     }
 }

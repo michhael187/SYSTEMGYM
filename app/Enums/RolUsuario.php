@@ -7,6 +7,7 @@ enum RolUsuario: string
     case ADMINISTRADOR = 'administrador';
     case GERENTE = 'gerente';
     case ENCARGADO = 'encargado';
+    case CLIENTE = 'cliente';
 
     /**
      * Valores permitidos para validacion de formularios de alta/edicion.
@@ -32,6 +33,19 @@ enum RolUsuario: string
             self::ADMINISTRADOR->value,
             self::GERENTE->value,
             self::ENCARGADO->value,
+        ];
+    }
+
+    /**
+     * Roles con acceso global a documentos PDF del sistema.
+     *
+     * @return list<string>
+     */
+    public static function descargaPdfGlobalValues(): array
+    {
+        return [
+            self::ADMINISTRADOR->value,
+            self::GERENTE->value,
         ];
     }
 }

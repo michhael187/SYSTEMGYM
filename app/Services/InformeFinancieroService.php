@@ -4,8 +4,7 @@ namespace App\Services;
 
 use App\Models\Pago;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Collection as SupportCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class InformeFinancieroService
 {
@@ -32,45 +31,61 @@ class InformeFinancieroService
      * Genera el informe financiero en un rango de fechas.
      *
      * @param  array<string, mixed>  $filtros
+     * @param  bool  $paraPdf
      * @return array<string, mixed>
      */
-    public function generarInforme(array $filtros): array
+    public function generarInforme(array $filtros, bool $paraPdf = false): array
     {
-        [$fechaDesde, $fechaHasta] = $this->resolverRangoFechas($filtros);
+        [$inicio, $fin] = $this->resolverRangoFechas($filtros);
 
-        /** @var Collection<int, Pago> $pagos */
-        $pagos = Pago::with(['cliente', 'membresia', 'usuario'])
-            ->whereBetween('fecha_pago', [$fechaDesde, $fechaHasta])
-            ->orderByDesc('fecha_pago')
-            ->get();
+        $base = Pago::query()
+            ->whereBetween('fecha_pago', [$inicio, $fin]);
 
-        $totalRecaudado = (float) $pagos->sum('monto');
-        $cantidadPagos = $pagos->count();
-        $promedioPorPago = $cantidadPagos > 0
-            ? $totalRecaudado / $cantidadPagos
-            : 0.0;
+        $totales = (clone $base)
+            ->selectRaw('COUNT(*) as total_pagos, COALESCE(SUM(monto), 0) as total_recaudado')
+            ->first();
 
-        /** @var SupportCollection<int, array{membresia: string, cantidad_pagos: int, monto_total: float}> $resumenPorMembresia */
-        $resumenPorMembresia = $pagos
-            ->groupBy(fn (Pago $pago) => $pago->membresia?->nombre_plan ?? 'Sin membresia')
-            ->map(function (Collection $grupo, string $nombreMembresia): array {
+        $totalPagos = (int) ($totales?->total_pagos ?? 0);
+        $totalRecaudado = (float) ($totales?->total_recaudado ?? 0);
+
+        $resumenPorMembresia = (clone $base)
+            ->join('membresias', 'pagos.membresia_id', '=', 'membresias.id')
+            ->selectRaw('membresias.nombre_plan as membresia, COUNT(*) as cantidad_pagos, COALESCE(SUM(pagos.monto), 0) as monto_total')
+            ->groupBy('membresias.nombre_plan')
+            ->orderByDesc('monto_total')
+            ->get()
+            ->map(function ($fila): array {
                 return [
-                    'membresia' => $nombreMembresia,
-                    'cantidad_pagos' => $grupo->count(),
-                    'monto_total' => (float) $grupo->sum('monto'),
+                    'membresia' => $fila->membresia,
+                    'cantidad_pagos' => (int) $fila->cantidad_pagos,
+                    'monto_total' => (float) $fila->monto_total,
                 ];
-            })
-            ->sortByDesc('monto_total')
-            ->values();
+            });
+
+        $detalleQuery = (clone $base)
+            ->with([
+                'cliente:id,dni,nombre,apellido',
+                'membresia:id,nombre_plan',
+                'usuario:id,nombre,apellido',
+            ])
+            ->select(['id', 'cliente_id', 'membresia_id', 'usuario_id', 'monto', 'fecha_pago'])
+            ->orderByDesc('fecha_pago');
+
+        $detalle = $paraPdf
+            ? $detalleQuery->get()
+            : $detalleQuery->paginate(50);
 
         return [
-            'fecha_desde' => $fechaDesde,
-            'fecha_hasta' => $fechaHasta,
-            'pagos' => $pagos,
+            'fecha_desde' => $inicio,
+            'fecha_hasta' => $fin,
+            'total_pagos' => $totalPagos,
             'total_recaudado' => $totalRecaudado,
-            'cantidad_pagos' => $cantidadPagos,
-            'promedio_por_pago' => $promedioPorPago,
+            'cantidad_pagos' => $totalPagos,
+            'promedio_por_pago' => $totalPagos > 0
+                ? $totalRecaudado / $totalPagos
+                : 0.0,
             'resumen_por_membresia' => $resumenPorMembresia,
+            'pagos' => $detalle,
         ];
     }
 }

@@ -3,6 +3,7 @@ use App\Http\Controllers\InformeController;
 use App\Http\Controllers\MembresiaController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\RegistroAuditoriaController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ProfileController;
@@ -10,9 +11,25 @@ use App\Models\Cliente;
 use App\Models\Pago;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Auth;
+use App\Enums\RolUsuario;
+use App\Models\User;
 
 Route::get('/', function () {
-    return view('welcome');
+    if (Auth::check()) {
+        return redirect()->route('dashboard');
+    }
+
+    $existeAdministrador = User::query()
+        ->where('rol', RolUsuario::ADMINISTRADOR->value)
+        ->exists();
+
+    if (! $existeAdministrador) {
+        return redirect()->route('setup.index');
+    }
+
+    return redirect()->route('login');
 });
 
 Route::get('/setup', [SetupController::class, 'index'])
@@ -22,29 +39,41 @@ Route::post('/setup', [SetupController::class, 'store'])
     ->name('setup.store');
 
 Route::get('/dashboard', function () {
-    $hoy = Carbon::today();
+    $cacheKey = 'dashboard.kpis.' . now()->format('Y-m-d');
 
-    $sociosActivos = Cliente::query()
-        ->where('estado', true)
-        ->whereDate('fecha_vencimiento', '>=', $hoy)
-        ->count();
+    $kpis = Cache::remember($cacheKey, now()->addMinutes(5), function () {
+        $todayStart = now()->startOfDay();
+        $todayEnd = now()->endOfDay();
+        $monthStart = now()->startOfMonth();
+        $monthEnd = now()->endOfMonth();
 
-    $ingresosMes = Pago::query()
-        ->whereBetween('fecha_pago', [$hoy->copy()->startOfMonth(), $hoy->copy()->endOfMonth()])
-        ->sum('monto');
+        return [
+            'sociosActivos' => \App\Models\Cliente::query()
+                ->where('estado', true)
+                ->where(function ($query) use ($todayStart) {
+                    $query->whereNull('fecha_vencimiento')
+                          ->orWhere('fecha_vencimiento', '>=', $todayStart);
+                })
+                ->count(),
 
-    $vencenHoy = Cliente::query()
-        ->where('estado', true)
-        ->whereDate('fecha_vencimiento', $hoy)
-        ->count();
+            'ingresosMes' => \App\Models\Pago::query()
+                ->whereBetween('fecha_pago', [$monthStart, $monthEnd])
+                ->sum('monto'),
 
-    $cuotasAtrasadas = Cliente::query()
-        ->where('estado', true)
-        ->whereDate('fecha_vencimiento', '<', $hoy)
-        ->count();
+            'vencenHoy' => \App\Models\Cliente::query()
+                ->where('estado', true)
+                ->whereBetween('fecha_vencimiento', [$todayStart, $todayEnd])
+                ->count(),
 
-    return view('dashboard', compact('sociosActivos', 'ingresosMes', 'vencenHoy', 'cuotasAtrasadas'));
-})->middleware(['auth', 'verified'])->name('dashboard');
+            'cuotasAtrasadas' => \App\Models\Cliente::query()
+                ->where('estado', true)
+                ->where('fecha_vencimiento', '<', $todayStart)
+                ->count(),
+        ];
+    });
+
+    return view('dashboard', $kpis);
+})->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -99,6 +128,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/pagos', [PagoController::class, 'store'])
         ->name('pagos.store');
 
+    Route::get('/pagos/{pago}/comprobante', [PagoController::class, 'descargarComprobante'])
+        ->name('pagos.comprobante.descargar');
+
     Route::get('/membresias', [MembresiaController::class, 'index'])
         ->name('membresias.index');
 
@@ -132,6 +164,10 @@ Route::middleware('auth')->group(function () {
         ->name('informes.clientes_deudores');
     Route::get('/informes/clientes-deudores/descargar', [InformeController::class, 'descargarClientesDeudores'])
         ->name('informes.clientes_deudores.descargar');
+
+    Route::get('/auditoria', [RegistroAuditoriaController::class, 'index'])
+        ->middleware('can:viewAny,' . \App\Models\RegistroAuditoria::class)
+        ->name('auditoria.index');
 });
 
 require __DIR__.'/auth.php';
