@@ -3,8 +3,9 @@
 namespace App\Services;
 
 use App\Models\Cliente;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Collection as SupportCollection;
+use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 
 class InformeClientesService
 {
@@ -12,60 +13,49 @@ class InformeClientesService
      * Genera el informe de clientes vigentes con estado activo.
      *
      * @param  array<string, mixed>  $opciones
+     * @param  bool  $paraPdf
      * @return array<string, mixed>
      */
-    public function generarInformeClientesVigentes(array $opciones = []): array
+    public function generarInformeClientesVigentes(array $opciones = [], bool $paraPdf = false): array
     {
-        $hoy = now()->startOfDay();
-        $sortByInput = (string) ($opciones['sort_by'] ?? 'fecha_vencimiento');
-        $sortDirectionInput = (string) ($opciones['sort_direction'] ?? 'asc');
+        $fechaReferencia = now()->startOfDay();
+        $sortBy = $this->resolverSortBy($opciones['sort_by'] ?? 'fecha_vencimiento', ['cliente', 'membresia', 'fecha_vencimiento']);
+        $sortDirection = $this->resolverSortDirection($opciones['sort_direction'] ?? 'asc');
 
-        $sortBy = in_array($sortByInput, ['cliente', 'membresia', 'fecha_vencimiento'], true)
-            ? $sortByInput
-            : 'fecha_vencimiento';
-        $sortDirection = in_array($sortDirectionInput, ['asc', 'desc'], true)
-            ? $sortDirectionInput
-            : 'asc';
-
-        /** @var Collection<int, Cliente> $clientes */
-        $clientes = Cliente::with('membresiaActual')
+        $baseQuery = Cliente::query()
+            ->with('membresiaActual:id,nombre_plan')
+            ->select(['id', 'dni', 'nombre', 'apellido', 'telefono', 'estado', 'fecha_vencimiento', 'membresia_actual_id'])
             ->where('estado', true)
-            ->whereDate('fecha_vencimiento', '>=', $hoy)
-            ->get();
+            ->where('fecha_vencimiento', '>=', $fechaReferencia);
 
-        $clientes = $clientes
-            ->sortBy(
-                function (Cliente $cliente) use ($sortBy): string|int {
-                    return match ($sortBy) {
-                        'cliente' => sprintf('%s %s', mb_strtolower((string) $cliente->apellido), mb_strtolower((string) $cliente->nombre)),
-                        'membresia' => mb_strtolower((string) ($cliente->membresiaActual?->nombre_plan ?? 'Sin membresia')),
-                        default => optional($cliente->fecha_vencimiento)?->timestamp ?? 0,
-                    };
-                },
-                SORT_NATURAL,
-                $sortDirection === 'desc'
-            )
-            ->values();
+        $clientesBase = $this->aplicarOrdenClientes($baseQuery, $sortBy, $sortDirection);
 
-        /** @var SupportCollection<int, array{membresia: string, cantidad_clientes: int}> $resumenPorMembresia */
-        $resumenPorMembresia = $clientes
-            ->groupBy(fn (Cliente $cliente) => $cliente->membresiaActual?->nombre_plan ?? 'Sin membresia')
-            ->map(function (Collection $grupo, string $nombreMembresia): array {
+        $clientes = $paraPdf
+            ? $clientesBase->get()
+            : $clientesBase->paginate(50);
+
+        $resumenPorMembresia = Cliente::query()
+            ->join('membresias', 'clientes.membresia_actual_id', '=', 'membresias.id')
+            ->where('clientes.estado', true)
+            ->where('clientes.fecha_vencimiento', '>=', $fechaReferencia)
+            ->selectRaw('membresias.nombre_plan as membresia, COUNT(*) as cantidad_clientes')
+            ->groupBy('membresias.nombre_plan')
+            ->orderByDesc('cantidad_clientes')
+            ->get()
+            ->map(static function ($fila): array {
                 return [
-                    'membresia' => $nombreMembresia,
-                    'cantidad_clientes' => $grupo->count(),
+                    'membresia' => $fila->membresia,
+                    'cantidad_clientes' => (int) $fila->cantidad_clientes,
                 ];
-            })
-            ->sortByDesc('cantidad_clientes')
-            ->values();
+            });
 
         return [
-            'fecha_referencia' => $hoy,
-            'clientes' => $clientes,
-            'total_clientes_vigentes' => $clientes->count(),
-            'resumen_por_membresia' => $resumenPorMembresia,
+            'fecha_referencia' => $fechaReferencia,
             'sort_by' => $sortBy,
             'sort_direction' => $sortDirection,
+            'total_clientes_vigentes' => $clientes instanceof LengthAwarePaginator ? $clientes->total() : $clientes->count(),
+            'resumen_por_membresia' => $resumenPorMembresia,
+            'clientes' => $clientes,
         ];
     }
 
@@ -73,62 +63,93 @@ class InformeClientesService
      * Genera el informe de clientes activos con membresia vencida.
      *
      * @param  array<string, mixed>  $opciones
+     * @param  bool  $paraPdf
      * @return array<string, mixed>
      */
-    public function generarInformeClientesDeudores(array $opciones = []): array
+    public function generarInformeClientesDeudores(array $opciones = [], bool $paraPdf = false): array
     {
-        $hoy = now()->startOfDay();
-        $sortByInput = (string) ($opciones['sort_by'] ?? 'fecha_vencimiento');
-        $sortDirectionInput = (string) ($opciones['sort_direction'] ?? 'asc');
+        $fechaReferencia = now()->startOfDay();
+        $sortBy = $this->resolverSortBy($opciones['sort_by'] ?? 'fecha_vencimiento', ['cliente', 'membresia', 'fecha_vencimiento', 'dias_atraso']);
+        $sortDirection = $this->resolverSortDirection($opciones['sort_direction'] ?? 'asc');
 
-        $sortBy = in_array($sortByInput, ['cliente', 'membresia', 'fecha_vencimiento', 'dias_atraso'], true)
-            ? $sortByInput
-            : 'fecha_vencimiento';
-        $sortDirection = in_array($sortDirectionInput, ['asc', 'desc'], true)
-            ? $sortDirectionInput
-            : 'asc';
-
-        /** @var Collection<int, Cliente> $clientes */
-        $clientes = Cliente::with('membresiaActual')
+        $baseQuery = Cliente::query()
+            ->with('membresiaActual:id,nombre_plan')
+            ->select(['id', 'dni', 'nombre', 'apellido', 'telefono', 'estado', 'fecha_vencimiento', 'membresia_actual_id'])
             ->where('estado', true)
-            ->whereNotNull('fecha_vencimiento')
-            ->whereDate('fecha_vencimiento', '<', $hoy)
-            ->get();
+            ->where('fecha_vencimiento', '<', $fechaReferencia);
 
-        $clientes = $clientes
-            ->sortBy(
-                function (Cliente $cliente) use ($sortBy, $hoy): string|int {
-                    return match ($sortBy) {
-                        'cliente' => sprintf('%s %s', mb_strtolower((string) $cliente->apellido), mb_strtolower((string) $cliente->nombre)),
-                        'membresia' => mb_strtolower((string) ($cliente->membresiaActual?->nombre_plan ?? 'Sin membresia')),
-                        'dias_atraso' => $cliente->fecha_vencimiento?->diffInDays($hoy) ?? 0,
-                        default => optional($cliente->fecha_vencimiento)?->timestamp ?? 0,
-                    };
-                },
-                SORT_NATURAL,
-                $sortDirection === 'desc'
-            )
-            ->values();
+        $clientesBase = $this->aplicarOrdenClientes($baseQuery, $sortBy, $sortDirection);
 
-        /** @var SupportCollection<int, array{membresia: string, cantidad_clientes: int}> $resumenPorMembresia */
-        $resumenPorMembresia = $clientes
-            ->groupBy(fn (Cliente $cliente) => $cliente->membresiaActual?->nombre_plan ?? 'Sin membresia')
-            ->map(function (Collection $grupo, string $nombreMembresia): array {
+        $clientes = $paraPdf
+            ? $clientesBase->get()
+            : $clientesBase->paginate(50);
+
+        $resumenPorMembresia = Cliente::query()
+            ->join('membresias', 'clientes.membresia_actual_id', '=', 'membresias.id')
+            ->where('clientes.estado', true)
+            ->where('clientes.fecha_vencimiento', '<', $fechaReferencia)
+            ->selectRaw('membresias.nombre_plan as membresia, COUNT(*) as cantidad_clientes')
+            ->groupBy('membresias.nombre_plan')
+            ->orderByDesc('cantidad_clientes')
+            ->get()
+            ->map(static function ($fila): array {
                 return [
-                    'membresia' => $nombreMembresia,
-                    'cantidad_clientes' => $grupo->count(),
+                    'membresia' => $fila->membresia,
+                    'cantidad_clientes' => (int) $fila->cantidad_clientes,
                 ];
-            })
-            ->sortByDesc('cantidad_clientes')
-            ->values();
+            });
 
         return [
-            'fecha_referencia' => $hoy,
-            'clientes' => $clientes,
-            'total_clientes_deudores' => $clientes->count(),
-            'resumen_por_membresia' => $resumenPorMembresia,
+            'fecha_referencia' => $fechaReferencia,
             'sort_by' => $sortBy,
             'sort_direction' => $sortDirection,
+            'total_clientes_deudores' => $clientes instanceof LengthAwarePaginator ? $clientes->total() : $clientes->count(),
+            'resumen_por_membresia' => $resumenPorMembresia,
+            'clientes' => $clientes,
         ];
+    }
+
+    /**
+     * Resuelve el campo de orden valido.
+     *
+     * @param  mixed  $value
+     * @param  array<int, string>  $allowed
+     */
+    private function resolverSortBy(mixed $value, array $allowed): string
+    {
+        $sortBy = is_string($value) && in_array($value, $allowed, true)
+            ? $value
+            : $allowed[0];
+
+        return $sortBy;
+    }
+
+    private function resolverSortDirection(mixed $value): string
+    {
+        return $value === 'desc' ? 'desc' : 'asc';
+    }
+
+    /**
+     * Aplica el orden solicitado al query base.
+     */
+    private function aplicarOrdenClientes(Builder $query, string $sortBy, string $sortDirection): Builder
+    {
+        return match ($sortBy) {
+            'cliente' => $query->orderBy('apellido', $sortDirection)->orderBy('nombre', $sortDirection),
+            'membresia' => $query
+                ->leftJoin('membresias', 'clientes.membresia_actual_id', '=', 'membresias.id')
+                ->orderBy('membresias.nombre_plan', $sortDirection)
+                ->select('clientes.*'),
+            'dias_atraso' => $query
+                ->select('clientes.*')
+                ->selectRaw('DATEDIFF(?, fecha_vencimiento) as dias_atraso', [$this->formatearFechaReferencia()])
+                ->orderBy('dias_atraso', $sortDirection),
+            default => $query->orderBy('fecha_vencimiento', $sortDirection),
+        };
+    }
+
+    private function formatearFechaReferencia(): string
+    {
+        return Carbon::now()->startOfDay()->toDateString();
     }
 }

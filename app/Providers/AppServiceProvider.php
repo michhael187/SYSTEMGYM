@@ -4,11 +4,13 @@ namespace App\Providers;
 
 use App\Models\Membresia;
 use App\Models\Cliente;
+use App\Models\RegistroAuditoria;
 use App\Policies\MembresiaPolicy;
 use App\Policies\InformePolicy;
 use App\Policies\ClientePolicy;
 use App\Models\Pago;
 use App\Policies\PagoPolicy;
+use App\Policies\RegistroAuditoriaPolicy;
 use App\Models\User;
 use App\Policies\UserPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -33,9 +35,11 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Pago::class, PagoPolicy::class);
         Gate::policy(Membresia::class, MembresiaPolicy::class);
         Gate::policy(Cliente::class, ClientePolicy::class);
+        Gate::policy(RegistroAuditoria::class, RegistroAuditoriaPolicy::class);
         Gate::define('viewFinancialReport', [InformePolicy::class,'viewFinancial']);
         Gate::define('viewActiveClientsReport', [InformePolicy::class, 'viewActiveClients']);
         Gate::define('viewOverdueClientsReport', [InformePolicy::class, 'viewOverdueClients']);
+        Gate::define('viewAuditLog', [RegistroAuditoriaPolicy::class, 'viewAny']);
 
     }
 }

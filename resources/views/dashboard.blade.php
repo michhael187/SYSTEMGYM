@@ -168,6 +168,30 @@
                     </div>
                 @endcan
 
+                @can('viewAny', App\Models\RegistroAuditoria::class)
+                    <div class="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+                        <div>
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c1.07-.013 2.008.714 2.007 1.835 0 1.093-1.032 1.875-2.007 1.835m5.801 0c1.07-.013 2.008.714 2.007 1.835 0 1.093-1.032 1.875-2.007 1.835M9 12H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25H9m3-10.5V6.108c0-1.135.845-2.098 1.976-2.192a48.424 48.424 0 011.123-.08m5.801 0c-1.07-.013-2.008.714-2.007 1.835 0 1.093 1.032-1.875 2.007-1.835m-5.801 0c-1.07-.013-2.008.714-2.007 1.835 0 1.093 1.032 1.875 2.007 1.835" /></svg>
+                                </div>
+                                <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600 uppercase tracking-wider">Trazabilidad</span>
+                            </div>
+                            <h3 class="mt-4 text-lg font-bold text-slate-900">Registro de Auditoría</h3>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-500">
+                                Consultá el historial inmutable de operaciones críticas. Todos los movimientos del personal quedan registrados permanentemente.
+                            </p>
+                        </div>
+
+                        <div class="mt-6">
+                            <a href="{{ route('auditoria.index') }}" class="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-slate-800">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                                Ver Historial Completo
+                            </a>
+                        </div>
+                    </div>
+                @endcan
+
                 @can('create', App\Models\Pago::class)
                     <div class="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
                         <div>

@@ -69,6 +69,11 @@ class User extends Authenticatable
         return $this->hasMany(HistorialOperacion::class, 'usuario_id');
     }
 
+    public function registrosAuditoria()
+    {
+        return $this->hasMany(RegistroAuditoria::class, 'user_id');
+    }
+
     /**
      * Aplica filtro de busqueda en campos relevantes del usuario.
      */

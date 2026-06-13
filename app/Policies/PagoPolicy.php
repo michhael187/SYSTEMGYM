@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Enums\RolUsuario;
+use App\Models\Pago;
 use App\Models\User;
 
 class PagoPolicy
@@ -21,5 +22,26 @@ class PagoPolicy
     public function create(User $user): bool
     {
         return $this->puedeRegistrarPagos($user);
+    }
+
+    /**
+     * Determina si el usuario puede descargar el comprobante PDF de un pago.
+     * Previene IDOR: el rol Cliente solo accede a documentos propios.
+     */
+    public function download(User $user, Pago $pago): bool
+    {
+        if (! $user->estado) {
+            return false;
+        }
+
+        if (in_array($user->rol, RolUsuario::descargaPdfGlobalValues(), true)) {
+            return true;
+        }
+
+        if ($user->rol === RolUsuario::CLIENTE->value) {
+            return (int) $pago->cliente_id === (int) $user->id;
+        }
+
+        return false;
     }
 }
