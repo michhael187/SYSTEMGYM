@@ -15,12 +15,14 @@ class StoreClienteRequest extends FormRequest
     }
 
     /**
-     * Normaliza el campo estado antes de validar.
+     * Normaliza el campo estado y los decimales antes de validar.
      */
     protected function prepareForValidation(): void
     {
         $this->merge([
             'estado' => $this->normalizarEstado($this->input('estado')),
+            'peso' => $this->normalizarDecimal($this->input('peso')),
+            'altura' => $this->normalizarDecimal($this->input('altura')),
         ]);
     }
 
@@ -30,12 +32,12 @@ class StoreClienteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'dni' => ['required', 'integer', 'min:0', 'unique:clientes,dni'],
+            'dni' => ['required', 'digits_between:7,8', 'unique:clientes,dni'],
             'nombre' => ['required', 'string', 'max:255'],
             'apellido' => ['required', 'string', 'max:255'],
-            'telefono' => ['required', 'integer', 'min:0'],
-            'peso' => ['nullable', 'numeric', 'between:0,999.99'],
-            'altura' => ['nullable', 'numeric', 'between:0,999.99'],
+            'telefono' => ['required', 'digits_between:10,13'],
+            'peso' => ['nullable', 'numeric', 'min:0', 'max:500'],
+            'altura' => ['nullable', 'numeric', 'min:0', 'max:300'],
             'observaciones' => ['nullable', 'string'],
             'estado' => ['required', 'boolean'],
         ];
@@ -49,8 +51,17 @@ class StoreClienteRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'dni.min' => 'El DNI no puede ser negativo.',
-            'telefono.min' => 'El número de teléfono no puede ser negativo.',
+            'dni.required' => 'El DNI es obligatorio.',
+            'dni.digits_between' => 'El DNI debe tener entre 7 y 8 números.',
+            'dni.unique' => 'El DNI ya está registrado.',
+            'telefono.required' => 'El teléfono es obligatorio.',
+            'telefono.digits_between' => 'El teléfono debe tener al menos 10 numeros.',
+            'peso.numeric' => 'El peso debe ser un número válido (usa punto o coma para decimales).',
+            'peso.min' => 'El peso no puede ser un valor negativo.',
+            'peso.max' => 'El peso no puede superar 500.',
+            'altura.numeric' => 'La altura debe ser un número válido (usa punto o coma para decimales).',
+            'altura.min' => 'La altura no puede ser un valor negativo.',
+            'altura.max' => 'La altura no puede superar 300.',
         ];
     }
 
@@ -76,5 +87,16 @@ class StoreClienteRequest extends FormRequest
         }
 
         return null;
+    }
+
+    private function normalizarDecimal(mixed $valor): mixed
+    {
+        if (! is_string($valor)) {
+            return $valor;
+        }
+
+        $valor = trim($valor);
+
+        return $valor === '' ? null : str_replace(',', '.', $valor);
     }
 }
