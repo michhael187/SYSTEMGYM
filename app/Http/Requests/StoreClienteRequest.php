@@ -30,14 +30,27 @@ class StoreClienteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'dni' => ['required', 'integer', 'unique:clientes,dni'],
+            'dni' => ['required', 'integer', 'min:0', 'unique:clientes,dni'],
             'nombre' => ['required', 'string', 'max:255'],
             'apellido' => ['required', 'string', 'max:255'],
-            'telefono' => ['required', 'string', 'max:255'],
+            'telefono' => ['required', 'integer', 'min:0'],
             'peso' => ['nullable', 'numeric', 'between:0,999.99'],
             'altura' => ['nullable', 'numeric', 'between:0,999.99'],
             'observaciones' => ['nullable', 'string'],
             'estado' => ['required', 'boolean'],
+        ];
+    }
+
+    /**
+     * Mensajes personalizados de validacion.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'dni.min' => 'El DNI no puede ser negativo.',
+            'telefono.min' => 'El número de teléfono no puede ser negativo.',
         ];
     }
 
