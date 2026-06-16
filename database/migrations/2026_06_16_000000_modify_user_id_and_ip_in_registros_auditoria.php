@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -12,17 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement('ALTER TABLE registros_auditoria DROP FOREIGN KEY registros_auditoria_user_id_foreign');
-        DB::statement('ALTER TABLE registros_auditoria MODIFY user_id BIGINT UNSIGNED NULL');
-        DB::statement('ALTER TABLE registros_auditoria ADD CONSTRAINT registros_auditoria_user_id_foreign FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE RESTRICT');
+        Schema::table('registros_auditoria', function (Blueprint $table) {
+            // 1. Eliminamos la FK de forma segura y genérica
+            $table->dropForeign(['user_id']);
+            
+            // 2. Modificamos el campo para que sea nullable
+            $table->unsignedBigInteger('user_id')->nullable()->change();
+            
+            // 3. Volvemos a añadir la FK
+            $table->foreign('user_id')->references('id')->on('usuarios')->onDelete('restrict');
 
-        if (Schema::hasColumn('registros_auditoria', 'direccion_ip')) {
-            DB::statement('ALTER TABLE registros_auditoria MODIFY direccion_ip VARCHAR(45) NULL');
-        } else {
-            Schema::table('registros_auditoria', function (Blueprint $table): void {
+            // 4. Gestionamos la IP
+            if (!Schema::hasColumn('registros_auditoria', 'direccion_ip')) {
                 $table->string('direccion_ip', 45)->nullable()->after('valores_nuevos');
-            });
-        }
+            } else {
+                $table->string('direccion_ip', 45)->nullable()->change();
+            }
+        });
     }
 
     /**
@@ -30,10 +35,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement('ALTER TABLE registros_auditoria DROP FOREIGN KEY registros_auditoria_user_id_foreign');
-        DB::statement('ALTER TABLE registros_auditoria MODIFY user_id BIGINT UNSIGNED NOT NULL');
-        DB::statement('ALTER TABLE registros_auditoria ADD CONSTRAINT registros_auditoria_user_id_foreign FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE RESTRICT');
-
-        DB::statement('ALTER TABLE registros_auditoria MODIFY direccion_ip VARCHAR(45) NOT NULL');
+        Schema::table('registros_auditoria', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+            $table->unsignedBigInteger('user_id')->nullable(false)->change();
+            $table->foreign('user_id')->references('id')->on('usuarios')->onDelete('restrict');
+            
+            $table->string('direccion_ip', 45)->nullable(false)->change();
+        });
     }
 };
