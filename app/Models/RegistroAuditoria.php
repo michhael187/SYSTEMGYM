@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use RuntimeException;
+use App\Models\User;
 
 class RegistroAuditoria extends Model
 {
@@ -48,7 +49,12 @@ class RegistroAuditoria extends Model
 
     public function usuario(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id')->withDefault([
+            'name' => 'Usuario Desconocido / Bot',
+            'nombre' => 'Usuario Desconocido / Bot',
+            'apellido' => '',
+            'email' => 'N/A',
+        ]);
     }
 
     public function auditable(): MorphTo

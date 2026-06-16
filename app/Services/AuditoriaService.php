@@ -10,9 +10,8 @@ use Illuminate\Support\Arr;
 
 class AuditoriaService
 {
-    // Le agregamos el signo de interrogación a ?User
     public function registrar(
-        ?User $operador, 
+        ?User $operador,
         AccionAuditoria $accion,
         string $modulo,
         ?Model $auditable = null,
@@ -21,14 +20,14 @@ class AuditoriaService
         ?string $direccionIp = null,
     ): RegistroAuditoria {
         return RegistroAuditoria::create([
-            'user_id' => $operador?->id, // Agregamos el ? antes de la flecha
+            'user_id' => $operador?->id,
             'auditable_type' => $auditable?->getMorphClass(),
             'auditable_id' => $auditable?->getKey(),
             'accion' => $accion,
             'modulo' => $modulo,
             'valores_viejos' => $this->sanitizarValores($valoresViejos),
             'valores_nuevos' => $this->sanitizarValores($valoresNuevos),
-            'direccion_ip' => $direccionIp ?? '0.0.0.0',
+            'direccion_ip' => $direccionIp,
         ]);
     }
 
@@ -49,5 +48,4 @@ class AuditoriaService
             'remember_token',
         ]);
     }
-    
 }
