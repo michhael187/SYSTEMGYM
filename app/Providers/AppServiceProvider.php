@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Membresia;
 use App\Models\Cliente;
 use App\Models\RegistroAuditoria;
+use App\Listeners\RegistrarLoginFallido;
 use App\Policies\MembresiaPolicy;
 use App\Policies\InformePolicy;
 use App\Policies\ClientePolicy;
@@ -13,6 +14,8 @@ use App\Policies\PagoPolicy;
 use App\Policies\RegistroAuditoriaPolicy;
 use App\Models\User;
 use App\Policies\UserPolicy;
+use Illuminate\Auth\Events\Failed;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,6 +34,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Event::listen(Failed::class, RegistrarLoginFallido::class);
+
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Pago::class, PagoPolicy::class);
         Gate::policy(Membresia::class, MembresiaPolicy::class);
