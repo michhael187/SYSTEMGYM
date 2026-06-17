@@ -50,6 +50,18 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // INSERTAR AQUÍ: bloquea el acceso si la cuenta fue dada de baja,
+        // destruye la sesión autenticada y devuelve el mensaje de seguridad solicitado.
+        if (! Auth::user()?->estado) {
+            Auth::logout();
+            $this->session()->invalidate();
+            $this->session()->regenerateToken();
+
+            throw ValidationException::withMessages([
+                'email' => 'Su cuenta se encuentra desactivada.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 
