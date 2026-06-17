@@ -7,6 +7,15 @@
 
     <div class="py-6">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            <div class="mb-4">
+                <a href="{{ route('clientes.index') }}" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-slate-900">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                    </svg>
+                    Volver a Clientes
+                </a>
+            </div>
+
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
                 @if (session('success'))
                     <div class="mb-4 rounded-md bg-green-100 px-4 py-3 text-green-800">
@@ -161,8 +170,11 @@
                         </p>
                     </div>
 
-                    <div>
-                        <button type="submit" style="background:#2563eb; color:white; padding:10px 16px; border-radius:6px;">
+                    <div class="flex items-center justify-end gap-3 border-t border-slate-100 pt-5">
+                        <a href="{{ route('clientes.index') }}" class="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-slate-900">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                             Guardar Cambios
                         </button>
                     </div>
