@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StorePagoRequest extends FormRequest
 {
@@ -21,7 +22,12 @@ class StorePagoRequest extends FormRequest
     {
         return [
             'cliente_id' => ['required', 'exists:clientes,id'],
-            'membresia_id' => ['required', 'exists:membresias,id'],
+            'membresia_id' => [
+                'required',
+                Rule::exists('membresias', 'id')
+                    ->where('activo', true)
+                    ->whereNull('deleted_at'),
+            ],
             'fecha_pago' => ['required', 'date'],
         ];
     }
@@ -34,15 +40,10 @@ class StorePagoRequest extends FormRequest
     public function messages(): array
     {
         return [
-            // Errores para el Cliente
             'cliente_id.required' => 'Debes seleccionar un cliente de la lista antes de cobrar.',
-            'cliente_id.exists' => 'El cliente seleccionado no es válido o fue eliminado.',
-
-            // Errores para la Membresía
-            'membresia_id.required' => 'Por favor, elige qué plan o membresía estás cobrando.',
-            'membresia_id.exists' => 'El plan seleccionado no se encuentra en el sistema.',
-
-            // Errores para la Fecha
+            'cliente_id.exists' => 'El cliente seleccionado no es valido o fue eliminado.',
+            'membresia_id.required' => 'Por favor, elige que plan o membresia estas cobrando.',
+            'membresia_id.exists' => 'La membresia seleccionada no es valida o ha sido dada de baja.',
             'fecha_pago.required' => 'La fecha y hora del pago son obligatorias.',
             'fecha_pago.date' => 'El formato de la fecha ingresada no es correcto.',
         ];
