@@ -31,6 +31,7 @@ class ClienteController extends Controller
             ->buscarTexto($busqueda)
             ->ordenadosPorNombre()
             ->paginate(15)
+            ->onEachSide(1)
             ->withQueryString();
 
         return view('clientes.index', compact('clientes', 'busqueda'));

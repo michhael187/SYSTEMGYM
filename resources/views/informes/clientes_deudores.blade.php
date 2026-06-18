@@ -133,6 +133,10 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <div class="mt-4 px-6 pb-6">
+                        {{ $clientes->links() }}
+                    </div>
                 @endif
             </div>
         </div>
