@@ -4,13 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Enums\AccionAuditoria;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ForcePasswordChangeRequest;
 use App\Services\AuditoriaService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
 class ForcePasswordChangeController extends Controller
@@ -30,11 +29,9 @@ class ForcePasswordChangeController extends Controller
     /**
      * Guarda la nueva contraseña y marca la cuenta como actualizada.
      */
-    public function update(Request $request): RedirectResponse
+    public function update(ForcePasswordChangeRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'password' => ['required', 'string', Password::min(8), 'confirmed'],
-        ]);
+        $validated = $request->validated();
 
         $usuario = $request->user();
 
