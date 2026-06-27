@@ -73,7 +73,7 @@
 
                     <div>
                         <label for="membresia_actual" class="block text-sm font-medium text-gray-700">Membres&iacute;a actual (solo consulta)</label>
-                        <input type="text" id="membresia_actual" value="{{ $cliente->membresiaActual?->nombre_plan ?? 'Sin membres&iacute;a' }}" disabled class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm">
+                        <input type="text" id="membresia_actual" value="{{ $cliente->membresiaActual?->nombre_plan ?? 'Sin membresia' }}" disabled class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm">
                     </div>
 
                     <div>
