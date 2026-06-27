@@ -16,7 +16,7 @@
                 </a>
             </div>
 
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+            <div class="bg-white p-6 shadow-sm sm:rounded-lg">
                 @if (session('success'))
                     <div class="mb-4 rounded-md bg-green-100 px-4 py-3 text-green-800">
                         {{ session('success') }}
@@ -39,135 +39,87 @@
                     @method('PUT')
 
                     <div>
-                        <label for="dni" class="block text-sm font-medium text-gray-700">DNI</label>
-                        <input
-                            type="number"
-                            id="dni"
-                            value="{{ $cliente->dni }}"
-                            disabled
-                            class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm"
-                        >
+                        <label for="dni_visible" class="block text-sm font-medium text-gray-700">DNI</label>
+                        <input type="text" id="dni_visible" value="{{ $cliente->dni }}" disabled class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm">
+                        <input type="hidden" name="dni" value="{{ $cliente->dni }}">
+                        @error('dni')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
                         <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre <span class="text-red-600">*</span></label>
-                        <input
-                            type="text"
-                            name="nombre"
-                            id="nombre"
-                            value="{{ old('nombre', $cliente->nombre) }}"
-                            placeholder="Ej: Juan"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                        >
+                        <input type="text" name="nombre" id="nombre" value="{{ old('nombre', $cliente->nombre) }}" placeholder="Ej: Juan" oninput="this.value = this.value.replace(/[^\p{L}\s]/gu, '')" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        @error('nombre')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
                         <label for="apellido" class="block text-sm font-medium text-gray-700">Apellido <span class="text-red-600">*</span></label>
-                        <input
-                            type="text"
-                            name="apellido"
-                            id="apellido"
-                            value="{{ old('apellido', $cliente->apellido) }}"
-                            placeholder="Ej: Pérez"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                        >
+                        <input type="text" name="apellido" id="apellido" value="{{ old('apellido', $cliente->apellido) }}" placeholder="Ej: P&eacute;rez" oninput="this.value = this.value.replace(/[^\p{L}\s]/gu, '')" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        @error('apellido')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
-                        <label for="telefono" class="block text-sm font-medium text-gray-700">Telefono <span class="text-red-600">*</span></label>
-                        <input
-                            type="text"
-                            name="telefono"
-                            id="telefono"
-                            value="{{ old('telefono', $cliente->telefono) }}"
-                            required
-                            placeholder="Ej: 2902456789"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                        >
+                        <label for="telefono" class="block text-sm font-medium text-gray-700">Tel&eacute;fono <span class="text-red-600">*</span></label>
+                        <input type="text" inputmode="numeric" name="telefono" id="telefono" value="{{ old('telefono', $cliente->telefono) }}" placeholder="Ej: 2902456789" oninput="this.value = this.value.replace(/\D/g, '')" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        @error('telefono')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
-                        <label for="membresia_actual" class="block text-sm font-medium text-gray-700">Membresia actual (solo consulta)</label>
-                        <input
-                            type="text"
-                            id="membresia_actual"
-                            value="{{ $cliente->membresiaActual?->nombre_plan ?? 'Sin membresia' }}"
-                            disabled
-                            class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm"
-                        >
+                        <label for="membresia_actual" class="block text-sm font-medium text-gray-700">Membres&iacute;a actual (solo consulta)</label>
+                        <input type="text" id="membresia_actual" value="{{ $cliente->membresiaActual?->nombre_plan ?? 'Sin membres&iacute;a' }}" disabled class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm">
                     </div>
 
                     <div>
-                        <label for="fecha_ultimo_pago" class="block text-sm font-medium text-gray-700">Fecha ultimo pago (solo consulta)</label>
-                        <input
-                            type="text"
-                            id="fecha_ultimo_pago"
-                            value="{{ optional($cliente->fecha_ultimo_pago)->format('d/m/Y H:i') ?? 'Sin registro' }}"
-                            disabled
-                            class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm"
-                        >
+                        <label for="fecha_ultimo_pago" class="block text-sm font-medium text-gray-700">Fecha &uacute;ltimo pago (solo consulta)</label>
+                        <input type="text" id="fecha_ultimo_pago" value="{{ optional($cliente->fecha_ultimo_pago)->format('d/m/Y H:i') ?? 'Sin registro' }}" disabled class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm">
                     </div>
 
                     <div>
-                        <label for="fecha_vencimiento" class="block text-sm font-medium text-gray-700">Fecha vencimiento (calculada automaticamente)</label>
-                        <input
-                            type="date"
-                            id="fecha_vencimiento"
-                            value="{{ optional($cliente->fecha_vencimiento)->format('Y-m-d') }}"
-                            disabled
-                            class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm"
-                        >
+                        <label for="fecha_vencimiento" class="block text-sm font-medium text-gray-700">Fecha vencimiento (calculada autom&aacute;ticamente)</label>
+                        <input type="date" id="fecha_vencimiento" value="{{ optional($cliente->fecha_vencimiento)->format('Y-m-d') }}" disabled class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm">
                         <p class="mt-1 text-sm text-gray-500">
-                            La fecha de vencimiento se calcula automaticamente segun la membresia y la fecha del ultimo pago.
+                            La fecha de vencimiento se calcula autom&aacute;ticamente seg&uacute;n la membres&iacute;a y la fecha del &uacute;ltimo pago.
                         </p>
                     </div>
 
                     <div>
                         <label for="peso" class="block text-sm font-medium text-gray-700">Peso (kg) (Opcional)</label>
-                        <input
-                            type="number"
-                            step="0.01"
-                            name="peso"
-                            id="peso"
-                            value="{{ old('peso', $cliente->peso) }}"
-                            placeholder="Ej: 75.5"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                        >
+                        <input type="text" inputmode="decimal" name="peso" id="peso" value="{{ old('peso', $cliente->peso) }}" placeholder="Ej: 75.5" oninput="this.value = this.value.replace(/[^0-9.,]/g, '')" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        @error('peso')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
                         <label for="altura" class="block text-sm font-medium text-gray-700">Altura (cm) (Opcional)</label>
-                        <input
-                            type="number"
-                            step="0.01"
-                            name="altura"
-                            id="altura"
-                            value="{{ old('altura', $cliente->altura) }}"
-                            placeholder="Ej: 175"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                        >
+                        <input type="text" inputmode="decimal" name="altura" id="altura" value="{{ old('altura', $cliente->altura) }}" placeholder="Ej: 175" oninput="this.value = this.value.replace(/[^0-9.,]/g, '')" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        @error('altura')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
                         <label for="observaciones" class="block text-sm font-medium text-gray-700">Observaciones (Opcional)</label>
-                        <textarea
-                            name="observaciones"
-                            id="observaciones"
-                            rows="4"
-                            placeholder="Ej: Lesión previa en rodilla derecha."
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                        >{{ old('observaciones', $cliente->observaciones) }}</textarea>
+                        <textarea name="observaciones" id="observaciones" rows="4" placeholder="Ej: Lesi&oacute;n previa en rodilla derecha." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('observaciones', $cliente->observaciones) }}</textarea>
                     </div>
 
                     <div>
                         <label for="estado" class="block text-sm font-medium text-gray-700">Estado del Cliente (Activo/Inactivo) <span class="text-red-600">*</span></label>
-                        <select name="estado" id="estado" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                            <option value="1" {{ old('estado', (string) $cliente->estado) === '1' ? 'selected' : '' }}>Activo</option>
-                            <option value="0" {{ old('estado', (string) $cliente->estado) === '0' ? 'selected' : '' }}>Inactivo</option>
+                        <select name="estado" id="estado" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                            <option value="1" {{ old('estado', (string) $cliente->estado) === '1' ? 'selected' : '' }}>&#x1F7E2; Activo</option>
+                            <option value="0" {{ old('estado', (string) $cliente->estado) === '0' ? 'selected' : '' }}>&#x1F534; Inactivo</option>
                         </select>
-                        <p class="mt-1 text-sm text-gray-500">
-                            Determina si el cliente se encuentra vigente o inactivo.
-                        </p>
+                        @error('estado')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-1 text-sm text-gray-500">Determina si el cliente se encuentra vigente o inactivo.</p>
                     </div>
 
                     <div class="flex items-center justify-end gap-3 border-t border-slate-100 pt-5">
