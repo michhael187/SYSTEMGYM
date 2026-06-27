@@ -43,7 +43,7 @@
 
                 <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-[1fr_1.3fr_1fr]">
                     
-                    <article class="flex flex-col justify-between h-full rounded-2xl border border-white/20 bg-white/10 p-5 backdrop-blur-md">
+                    <a href="{{ route('informes.clientes_vigentes') }}" class="flex flex-col justify-between h-full rounded-2xl border border-white/20 bg-white/10 p-5 backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 focus:ring-offset-slate-900">
                         <div class="flex items-center justify-between gap-3">
                             <p class="text-sm text-blue-100 whitespace-nowrap">Socios Activos</p>
                             <svg class="h-6 w-6 text-blue-100" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -53,10 +53,10 @@
                         <p class="mt-3 text-3xl font-semibold tracking-tight text-white whitespace-nowrap">{{ $sociosActivos }}</p>
                         <div class="flex-grow"></div>
                         <p class="mt-3 text-xs leading-5 text-slate-300">Membresías al día</p>
-                    </article>
+                    </a>
 
                     @can('viewFinancialReport')
-                    <article class="flex flex-col justify-between h-full rounded-2xl border border-white/20 bg-white/10 p-5 backdrop-blur-md">
+                    <a href="{{ route('informes.financiero') }}" class="flex flex-col justify-between h-full rounded-2xl border border-white/20 bg-white/10 p-5 backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 focus:ring-offset-slate-900">
                         <div class="flex items-center justify-between gap-3">
                             <p class="text-sm text-blue-100 whitespace-nowrap">Ingresos del Mes</p>
                             <svg class="h-6 w-6 text-blue-100" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -66,10 +66,10 @@
                         <p class="mt-3 text-3xl font-semibold tracking-tight text-white whitespace-nowrap">$ {{ number_format($ingresosMes, 0, ',', '.') }}</p>
                         <div class="flex-grow"></div>
                         <p class="mt-3 text-xs leading-5 text-slate-300">Acumulado mensual.</p>
-                    </article>
+                    </a>
                     @endcan
 
-                    <article class="flex flex-col justify-between h-full rounded-2xl border border-white/20 bg-white/10 p-5 backdrop-blur-md">
+                    <a href="{{ route('informes.clientes_deudores') }}" class="flex flex-col justify-between h-full rounded-2xl border border-white/20 bg-white/10 p-5 backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 focus:ring-offset-slate-900">
                         <div class="flex items-center justify-between gap-3">
                             <p class="text-sm text-blue-100 whitespace-nowrap">Vencimientos del día</p>
                             <svg class="h-6 w-6 text-blue-100" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -79,7 +79,7 @@
                         <p class="mt-3 text-3xl font-semibold tracking-tight text-white whitespace-nowrap">{{ $vencenHoy }}</p>
                         <div class="flex-grow"></div>
                         <p class="mt-3 text-xs font-medium leading-5 text-rose-400 whitespace-nowrap">{{ $cuotasAtrasadas }} Socios con deudas.</p>
-                    </article>
+                    </a>
 
                 </div>
             </div>
