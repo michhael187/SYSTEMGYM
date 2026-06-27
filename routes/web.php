@@ -39,7 +39,7 @@ Route::post('/setup', [SetupController::class, 'store'])
     ->name('setup.store');
 
 Route::get('/dashboard', function () {
-    $cacheKey = 'dashboard.kpis.' . now()->format('Y-m-d');
+    $cacheKey = 'dashboard.kpis.v2.' . now()->format('Y-m-d');
 
     $kpis = Cache::remember($cacheKey, now()->addMinutes(5), function () {
         $todayStart = now()->startOfDay();
@@ -50,10 +50,8 @@ Route::get('/dashboard', function () {
         return [
             'sociosActivos' => \App\Models\Cliente::query()
                 ->where('estado', true)
-                ->where(function ($query) use ($todayStart) {
-                    $query->whereNull('fecha_vencimiento')
-                          ->orWhere('fecha_vencimiento', '>=', $todayStart);
-                })
+                ->whereNotNull('fecha_vencimiento')
+                ->where('fecha_vencimiento', '>=', $todayStart)
                 ->count(),
 
             'ingresosMes' => \App\Models\Pago::query()

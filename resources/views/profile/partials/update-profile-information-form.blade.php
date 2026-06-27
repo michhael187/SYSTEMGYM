@@ -27,18 +27,18 @@
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             
             <div>
-                <label for="name" class="block text-sm font-semibold text-slate-700">Nombre</label>
+                <label for="nombre" class="block text-sm font-semibold text-slate-700">Nombre</label>
                 <input 
-                    id="name" 
-                    name="name" 
+                    id="nombre" 
+                    name="nombre" 
                     type="text" 
-                    value="{{ old('name', $user->name) }}" 
+                    value="{{ old('nombre', $user->nombre) }}" 
                     @disabled(!$esAdmin)
                     class="mt-1.5 block w-full rounded-lg text-sm shadow-sm focus:border-blue-500 focus:bg-white focus:ring-blue-500 {{ !$esAdmin ? 'border-slate-200 bg-slate-100 text-slate-500 cursor-not-allowed focus:ring-0 focus:border-slate-200' : 'border-slate-300 bg-slate-50 text-slate-900' }}" 
                     required 
                     autocomplete="given-name" 
                 />
-                <x-input-error :messages="$errors->get('name')" class="mt-2 text-xs font-medium text-rose-600" />
+                <x-input-error :messages="$errors->get('nombre')" class="mt-2 text-xs font-medium text-rose-600" />
             </div>
 
             <div>
