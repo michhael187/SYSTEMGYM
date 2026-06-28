@@ -47,6 +47,10 @@ class AuthenticatedSessionController extends Controller
             );
         }
 
+        if ($usuario instanceof User && ! $usuario->password_cambiado) {
+            return redirect()->route('password.force-change');
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

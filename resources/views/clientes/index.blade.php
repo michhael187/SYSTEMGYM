@@ -99,7 +99,7 @@
                 @endif
             </div>
 
-            <div>
+            <div class="mt-4">
                 {{ $clientes->links() }}
             </div>
         </div>

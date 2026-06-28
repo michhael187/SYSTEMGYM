@@ -73,7 +73,7 @@ class InformeFinancieroService
 
         $detalle = $paraPdf
             ? $detalleQuery->get()
-            : $detalleQuery->paginate(50);
+            : $detalleQuery->paginate(50)->onEachSide(1);
 
         return [
             'fecha_desde' => $inicio,

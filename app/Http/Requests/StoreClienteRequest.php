@@ -28,14 +28,16 @@ class StoreClienteRequest extends FormRequest
 
     /**
      * Reglas de validacion para registrar un nuevo cliente.
+     *
+     * @return array<string, array<int, string>>
      */
     public function rules(): array
     {
         return [
-            'dni' => ['required', 'digits_between:7,8', 'unique:clientes,dni'],
-            'nombre' => ['required', 'string', 'max:255'],
-            'apellido' => ['required', 'string', 'max:255'],
-            'telefono' => ['required', 'digits_between:10,13'],
+            'dni' => ['required', 'regex:/^[0-9]+$/', 'digits_between:7,8', 'unique:clientes,dni'],
+            'nombre' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+            'apellido' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+            'telefono' => ['required', 'regex:/^[0-9]+$/', 'digits_between:10,13'],
             'peso' => ['nullable', 'numeric', 'min:0', 'max:500'],
             'altura' => ['nullable', 'numeric', 'min:0', 'max:300'],
             'observaciones' => ['nullable', 'string'],
@@ -52,14 +54,18 @@ class StoreClienteRequest extends FormRequest
     {
         return [
             'dni.required' => 'El DNI es obligatorio.',
+            'dni.regex' => 'El DNI solo puede contener números.',
             'dni.digits_between' => 'El DNI debe tener entre 7 y 8 números.',
             'dni.unique' => 'El DNI ya está registrado.',
+            'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+            'apellido.regex' => 'El apellido solo puede contener letras y espacios.',
             'telefono.required' => 'El teléfono es obligatorio.',
-            'telefono.digits_between' => 'El teléfono debe tener al menos 10 numeros.',
-            'peso.numeric' => 'El peso debe ser un número válido (usa punto o coma para decimales).',
+            'telefono.regex' => 'El teléfono solo puede contener números.',
+            'telefono.digits_between' => 'El teléfono debe tener entre 10 y 13 números.',
+            'peso.numeric' => 'El peso debe ser un valor numérico.',
             'peso.min' => 'El peso no puede ser un valor negativo.',
             'peso.max' => 'El peso no puede superar 500.',
-            'altura.numeric' => 'La altura debe ser un número válido (usa punto o coma para decimales).',
+            'altura.numeric' => 'La altura debe ser un valor numérico.',
             'altura.min' => 'La altura no puede ser un valor negativo.',
             'altura.max' => 'La altura no puede superar 300.',
         ];

@@ -56,7 +56,20 @@
                                 </div>
                                 <div class="col-span-2">
                                     <label for="valor_busqueda" class="mb-1 block text-xs font-medium text-slate-500 uppercase tracking-wider">Dato a buscar</label>
-                                    <input type="text" name="valor_busqueda" id="valor_busqueda" value="{{ $valorBusqueda }}" placeholder="Ej: 41000001" class="block w-full rounded-lg border-slate-300 text-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <input
+                                        type="text"
+                                        name="valor_busqueda"
+                                        id="valor_busqueda"
+                                        value="{{ $valorBusqueda }}"
+                                        placeholder="{{ ($tipoBusqueda ?? 'apellido') === 'dni' ? 'Ej: 41000001' : 'Ej: Gomez' }}"
+                                        inputmode="{{ ($tipoBusqueda ?? 'apellido') === 'dni' ? 'numeric' : 'text' }}"
+                                        maxlength="{{ ($tipoBusqueda ?? 'apellido') === 'dni' ? '8' : '255' }}"
+                                        autocomplete="off"
+                                        class="block w-full rounded-lg border-slate-300 text-sm focus:border-blue-500 focus:ring-blue-500 @error('valor_busqueda') border-rose-300 focus:border-rose-500 focus:ring-rose-500 @enderror"
+                                    >
+                                    @error('valor_busqueda')
+                                        <p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>
+                                    @enderror
                                 </div>
                             </div>
                             <button type="submit" class="w-full rounded-lg bg-slate-800 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-700">
@@ -159,4 +172,50 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tipoBusqueda = document.getElementById('tipo_busqueda');
+            const valorBusqueda = document.getElementById('valor_busqueda');
+
+            if (!tipoBusqueda || !valorBusqueda) {
+                return;
+            }
+
+            const limpiarValor = () => {
+                if (tipoBusqueda.value === 'dni') {
+                    valorBusqueda.value = valorBusqueda.value.replace(/\D/g, '').slice(0, 8);
+                    return;
+                }
+
+                valorBusqueda.value = valorBusqueda.value.replace(/[^\p{L}\s]/gu, '');
+            };
+
+            const sincronizarCampo = () => {
+                if (tipoBusqueda.value === 'dni') {
+                    valorBusqueda.placeholder = 'Ej: 41000001';
+                    valorBusqueda.inputMode = 'numeric';
+                    valorBusqueda.maxLength = 8;
+                    valorBusqueda.pattern = '[0-9]{7,8}';
+                } else {
+                    valorBusqueda.placeholder = 'Ej: Gomez';
+                    valorBusqueda.inputMode = 'text';
+                    valorBusqueda.maxLength = 255;
+                    valorBusqueda.removeAttribute('pattern');
+                }
+
+                limpiarValor();
+            };
+
+            tipoBusqueda.addEventListener('change', () => {
+                valorBusqueda.value = '';
+                sincronizarCampo();
+                valorBusqueda.focus();
+            });
+
+            valorBusqueda.addEventListener('input', limpiarValor);
+
+            sincronizarCampo();
+        });
+    </script>
 </x-app-layout>

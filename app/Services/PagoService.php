@@ -9,6 +9,7 @@ use App\Models\Pago;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class PagoService
 {
@@ -25,7 +26,16 @@ class PagoService
     {
         return DB::transaction(function () use ($datos, $usuario): Pago {
             $cliente = Cliente::findOrFail($datos['cliente_id']);
-            $membresia = Membresia::findOrFail($datos['membresia_id']);
+            $membresia = Membresia::query()
+                ->where('activo', true)
+                ->whereNull('deleted_at')
+                ->find($datos['membresia_id']);
+
+            if (! $membresia) {
+                throw ValidationException::withMessages([
+                    'membresia_id' => 'La membresia seleccionada no es valida o ha sido dada de baja.',
+                ]);
+            }
 
             $fechaPago = Carbon::parse($datos['fecha_pago']);
             $fechaFin = $this->vigenciaService->calcularNuevaVigencia($cliente, $membresia, $fechaPago);

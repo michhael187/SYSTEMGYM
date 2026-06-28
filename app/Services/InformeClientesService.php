@@ -32,7 +32,7 @@ class InformeClientesService
 
         $clientes = $paraPdf
             ? $clientesBase->get()
-            : $clientesBase->paginate(50);
+            : $clientesBase->paginate(50)->onEachSide(1);
 
         $resumenPorMembresia = Cliente::query()
             ->join('membresias', 'clientes.membresia_actual_id', '=', 'membresias.id')
@@ -82,7 +82,7 @@ class InformeClientesService
 
         $clientes = $paraPdf
             ? $clientesBase->get()
-            : $clientesBase->paginate(50);
+            : $clientesBase->paginate(50)->onEachSide(1);
 
         $resumenPorMembresia = Cliente::query()
             ->join('membresias', 'clientes.membresia_actual_id', '=', 'membresias.id')

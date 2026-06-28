@@ -47,13 +47,18 @@ class BuscarPagoClienteRequest extends FormRequest
     {
         $validator->after(function (Validator $validator): void {
             $valorBusqueda = $this->input('valor_busqueda');
+            $tipoBusqueda = $this->input('tipo_busqueda');
 
             if ($valorBusqueda === '') {
                 return;
             }
 
-            if ($this->input('tipo_busqueda') === 'dni' && ! ctype_digit($valorBusqueda)) {
-                $validator->errors()->add('valor_busqueda', 'Para buscar por DNI debe ingresar solo numeros.');
+            if ($tipoBusqueda === 'dni' && ! preg_match('/^\d{7,8}$/', $valorBusqueda)) {
+                $validator->errors()->add('valor_busqueda', 'El DNI debe contener solo numeros y tener entre 7 y 8 digitos.');
+            }
+
+            if ($tipoBusqueda === 'apellido' && ! preg_match('/^[\p{L}\s]+$/u', $valorBusqueda)) {
+                $validator->errors()->add('valor_busqueda', 'El apellido solo puede contener letras y espacios.');
             }
         });
     }

@@ -18,6 +18,8 @@ class UpdateUserRequest extends FormRequest
 
     /**
      * Reglas de validacion para la modificacion de usuarios.
+     *
+     * @return array<string, array<int, mixed>>
      */
     public function rules(): array
     {
@@ -25,8 +27,8 @@ class UpdateUserRequest extends FormRequest
 
         return [
             'rol' => ['required', 'string', Rule::in(RolUsuario::gestionablesValues())],
-            'nombre' => ['required', 'string', 'max:255'],
-            'apellido' => ['required', 'string', 'max:255'],
+            'nombre' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+            'apellido' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
             'email' => [
                 'required',
                 'string',
@@ -34,6 +36,19 @@ class UpdateUserRequest extends FormRequest
                 'max:255',
                 Rule::unique('usuarios', 'email')->ignore($usuario->id),
             ],
+        ];
+    }
+
+    /**
+     * Mensajes personalizados de validacion.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+            'apellido.regex' => 'El apellido solo puede contener letras y espacios.',
         ];
     }
 }
